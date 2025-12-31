@@ -1,0 +1,159 @@
+:root {
+  --gap: 12px;
+  --cols: 4;
+  --maxw: 1400px;
+  --radius: 14px;
+  --shadow: 0 6px 18px rgba(0,0,0,.08);
+  --hover-scale: 1.06;
+  --overlay-color: rgba(0, 200, 0, 0.22);
+}
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 32px auto;
+  padding: 0 16px 32px;
+}
+
+h1 { margin: 12px 0 8px; font-size: 1.8rem; }
+p.desc { margin: 0 0 20px; color: #444; }
+
+form.order-form {
+  margin: 20px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0,0,0,.05);
+}
+
+form.order-form input, form.order-form textarea {
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+form.order-form button {
+  width: 200px;
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  background: #0b875b;
+  color: #fff;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(200px, 1fr));
+  gap: var(--gap);
+  margin-top: 24px;
+}
+
+.item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform .15s ease-out;
+  cursor: pointer;
+}
+
+.item img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.item:hover,
+.item.active {
+  transform: scale(var(--hover-scale));
+  z-index: 10;
+}
+
+.item-title {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  background: rgba(0,0,0,.6);
+  color: #fff;
+  padding: 4px 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+.item:hover .controls,
+.item.active .controls {
+  opacity: 1;
+}
+
+.controls button {
+  padding: 2px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.controls .add { background: #0b5ed7; color: #fff; }
+.controls .remove { background: linear-gradient(45deg, orange, red); color: #fff; }
+
+.controls textarea {
+  width: 40px;
+  height: 24px;
+  text-align: center;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  background: rgba(255,255,255,.9);
+  pointer-events: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--overlay-color);
+  border-radius: var(--radius);
+  display: none;
+}
+
+#createOrderBtn {
+  margin-top: 24px;
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: none;
+  background: #111827;
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#orderOutput {
+  width: 100%;
+  min-height: 180px;
+  margin-top: 16px;
+  padding: 10px;
+  font-family: monospace;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+#summary { margin-top: 16px; text-align: center; }
+#summary img { width: 80px; cursor: pointer; }
