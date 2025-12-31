@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   const STEP = 5;
-  const MIN_QTY = 20;
-  const FREE_SHIP = 30;
+  const MIN_QTY = 20;      // Dein neues Minimum
+  const FREE_SHIP = 30;    // Dein neuer kostenloser Versand
   const SHIP_PRICE = 80;
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
@@ -70,22 +70,32 @@ document.addEventListener("DOMContentLoaded", function() {
     const remove=item.querySelector(".remove");
     const ta=item.querySelector("textarea");
 
-    add.onclick=e=>{
-      e.stopPropagation();
-      qty[p.id]+=STEP;
-      ta.value=qty[p.id];
-      remove.style.display="inline-block";
-      overlay.style.display="block";
+    // Funktion zum Hinzufügen (wird bei Klick auf Bild UND Button genutzt)
+    const addFn = (e) => {
+      if(e) e.stopPropagation(); // Verhindert doppeltes Auslösen
+      qty[p.id] += STEP;
+      ta.value = qty[p.id];
+      remove.style.display = "inline-block";
+      overlay.style.display = "block";
+      item.classList.add("active");
     };
 
-    remove.onclick=e=>{
-      e.stopPropagation();
-      qty[p.id]-=STEP;
-      if(qty[p.id]<0) qty[p.id]=0;
-      ta.value=qty[p.id];
-      if(qty[p.id]===0){
-        remove.style.display="none";
-        overlay.style.display="none";
+    // Klick auf das gesamte Produkt-Feld (Bild inkl.)
+    item.onclick = addFn;
+
+    // Klick auf den + Button (ruft die gleiche Funktion auf)
+    add.onclick = addFn;
+
+    // Klick auf den - Button
+    remove.onclick = e => {
+      e.stopPropagation(); // WICHTIG: Verhindert, dass der Klick auf das Bild (addFn) ausgelöst wird
+      qty[p.id] -= STEP;
+      if(qty[p.id] < 0) qty[p.id] = 0;
+      ta.value = qty[p.id];
+      if(qty[p.id] === 0){
+        remove.style.display = "none";
+        overlay.style.display = "none";
+        item.classList.remove("active");
       }
     };
 
@@ -100,14 +110,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const total=Object.values(qty).reduce((a,b)=>a+b,0);
 
-    if(total<MIN_QTY){
-      alert(`Toplam ${total} adet seçtiniz.\nMinimum ${MIN_QTY} adet gereklidir.`);
+    if(total < MIN_QTY){
+      alert(`Şu an sepetinizde ${total} adet ürün var.\nToplu sipariş verebilmek için minimum ${MIN_QTY} adet seçim yapmalısınız.`);
       return;
     }
 
-    if(total<FREE_SHIP){
-      const diff=FREE_SHIP-total;
-      if(!confirm(`${total} adet seçtiniz.\n${FREE_SHIP} adet ve üzeri kargo ücretsizdir.\n${diff} adet daha eklerseniz kargo ücretsiz olur.\n\nOnayla → Bu haliyle devam et`)){
+    if(total < FREE_SHIP){
+      const diff = FREE_SHIP - total;
+      if(!confirm(`Siparişiniz ${total} adet.\n\n30 adede ulaşırsanız kargo ücretsiz olur!\n${diff} adet daha eklemek ister misiniz?\n\nTamam → Bu haliyle devam et\nİptal → Ürün eklemeye geri dön`)){
         return;
       }
     }
@@ -124,7 +134,7 @@ document.addEventListener("DOMContentLoaded", function() {
       }
     });
 
-    const shipping = total>=FREE_SHIP ? 0 : SHIP_PRICE;
+    const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
     const grand = subtotal + shipping;
 
     let output = `
@@ -148,40 +158,14 @@ Genel Toplam: ${grand} ${CURRENCY}
     const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(output)}`;
 
     document.getElementById("summary").innerHTML = `
-      <div style="
-        display:flex;
-        flex-direction:column;
-        align-items:center;
-        gap:12px;
-        margin-top:20px;
-      ">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:20px;">
         <a href="${wa}" target="_blank" style="text-align:center;">
           <img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:80px;">
         </a>
-        <div style="
-          background:#e8f5e9;
-          border:1px solid #c8e6c9;
-          padding:14px 18px;
-          border-radius:10px;
-          max-width:320px;
-          text-align:center;
-          font-size:15px;
-          color:#2e7d32;
-          box-shadow:0 2px 6px rgba(0,0,0,0.08);
-        ">
+        <div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:14px 18px; border-radius:10px; max-width:320px; text-align:center; font-size:15px; color:#2e7d32; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
           Siparişiniz hazır! WhatsApp butonuna tıklayarak gönderebilirsiniz.
         </div>
       </div>
     `;
 
-    // NEU: Bildschirm sanft nach unten scrollen zum Ergebnis
-    document.getElementById("orderOutput").scrollIntoView({ 
-      behavior: "smooth", 
-      block: "start" 
-    });
-
-  };
-
-});
-
-
+    // Sanftes Scrollen
