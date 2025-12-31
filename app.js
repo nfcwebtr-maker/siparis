@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
       if (total >= FREE_SHIP) {
           bar.innerHTML = `🚀 Sepetiniz: ${total} Adet - Kargo Ücretsiz!`;
       } else {
-          bar.innerHTML = `✅ Sepetiniz: ${total} Adet (Kargo için ${FREE_SHIP - total} daha ekleyin)`;
+          bar.innerHTML = `✅ Sepetiniz: ${total} Adet (Ücretsiz Kargo için ${FREE_SHIP - total} daha ekleyin)`;
       }
     } else {
       bar.classList.remove("success");
@@ -163,3 +163,4 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
   };
 });
+
