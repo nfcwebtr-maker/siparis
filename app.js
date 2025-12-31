@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
 
+  // ==========================================
+  // 1. KONFIGURATION & WERTE
+  // ==========================================
   const STEP = 5;
   const MIN_QTY = 20;      
   const FREE_SHIP = 30;    
@@ -23,7 +26,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const grid = document.getElementById("grid");
   const qty = {};
 
-  // Produkte rendern
+  // ==========================================
+  // 2. GRID RENDERING
+  // ==========================================
   PRODUCTS.forEach(p => {
     qty[p.id] = 0;
     const item = document.createElement("div");
@@ -45,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const removeBtn = item.querySelector(".remove");
     const qtySpan = item.querySelector(".item-qty");
 
-    const updateUI = () => {
+    const updateItemUI = () => {
       qtySpan.innerText = qty[p.id];
       badge.innerText = qty[p.id] + " Adet";
       
@@ -63,8 +68,8 @@ document.addEventListener("DOMContentLoaded", function() {
       updateGlobalStatus();
     };
 
-    item.onclick = () => { qty[p.id] += STEP; updateUI(); };
-    removeBtn.onclick = (e) => { e.stopPropagation(); qty[p.id] -= STEP; if(qty[p.id]<0) qty[p.id]=0; updateUI(); };
+    item.onclick = () => { qty[p.id] += STEP; updateItemUI(); };
+    removeBtn.onclick = (e) => { e.stopPropagation(); qty[p.id] -= STEP; if(qty[p.id]<0) qty[p.id]=0; updateItemUI(); };
 
     grid.appendChild(item);
   });
@@ -73,65 +78,71 @@ document.addEventListener("DOMContentLoaded", function() {
     const total = Object.values(qty).reduce((a, b) => a + b, 0);
     const bar = document.getElementById("statusBar");
     const count = document.getElementById("globalCount");
+    if(!bar || !count) return;
     count.innerText = total;
 
     if (total >= MIN_QTY) {
       bar.classList.add("success");
-      bar.innerHTML = `✅ Sepetiniz: ${total} Adet (Minimum Tamam!)`;
+      bar.innerHTML = total >= FREE_SHIP ? `🚀 Sepetiniz: ${total} Adet - Kargo Ücretsiz!` : `✅ Sepetiniz: ${total} Adet (Minimum Tamam!)`;
     } else {
       bar.classList.remove("success");
       bar.innerHTML = `Sepetiniz: ${total} Adet (Minimum için ${MIN_QTY - total} daha ekleyin)`;
     }
   }
 
-  // Formular-Logik
-  ["businessName","address","recipient","phone"].forEach(f => {
+  // ==========================================
+  // 3. FORM DATEN & SIPARIŞ
+  // ==========================================
+  ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
-    const saved = localStorage.getItem(f);
-    if(saved) el.value = saved;
+    if(el && localStorage.getItem(f)) el.value = localStorage.getItem(f);
   });
 
   document.getElementById("saveFormBtn").onclick = () => {
-    ["businessName","address","recipient","phone"].forEach(f => {
+    ["businessName", "address", "recipient", "phone"].forEach(f => {
       localStorage.setItem(f, document.getElementById(f).value);
     });
-    alert("Bilgiler tarayıcıya kaydedildi.");
+    alert("Bilgileriniz kaydedildi.");
   };
 
-  // Sipariş Oluşturma
   document.getElementById("createOrderBtn").onclick = () => {
     const total = Object.values(qty).reduce((a, b) => a + b, 0);
-
     if (total < MIN_QTY) {
-      alert(`Sepetinizde sadece ${total} adet var. Devam etmek için en az ${MIN_QTY} adet seçmelisiniz.`);
+      alert(`En az ${MIN_QTY} adet seçmelisiniz.`);
       return;
     }
 
     let subtotal = 0;
-    let text = "";
+    let productLines = "";
     PRODUCTS.forEach(p => {
       if (qty[p.id] > 0) {
-        const line = qty[p.id] * p.price;
-        subtotal += line;
-        text += `• ${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
+        subtotal += (qty[p.id] * p.price);
+        productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
       }
     });
 
     const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
-    const grandTotal = subtotal + shipping;
-
-    const summaryText = `NFC.web.tr Yeni Sipariş!\n\nFirma: ${document.getElementById("businessName").value}\nAlıcı: ${document.getElementById("recipient").value}\nAdres: ${document.getElementById("address").value}\nTel: ${document.getElementById("phone").value}\n\nÜrünler:\n${text}\nToplam Adet: ${total}\nKargo: ${shipping} ${CURRENCY}\nGenel Toplam: ${grandTotal} ${CURRENCY}`;
+    const summaryText = `NFC.web.tr Yeni Sipariş!\n\nAlıcı: ${document.getElementById("recipient").value}\nTel: ${document.getElementById("phone").value}\n\nÜrünler:\n${productLines}\nToplam: ${subtotal + shipping} ${CURRENCY}`;
 
     document.getElementById("orderOutput").value = summaryText;
     const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(summaryText)}`;
 
+    // NEUES ICON (Option 2) eingebaut:
     document.getElementById("summary").innerHTML = `
-      <div style="text-align:center; margin: 30px 0;">
-        <a href="${waUrl}" target="_blank"><img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:100px;"></a>
-        <p style="color: #059669; font-weight: bold;">Siparişiniz hazır! Yukarıdaki WhatsApp ikonuna tıklayarak bize iletin.</p>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:15px; margin-top:30px; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); border:1px solid #eee;">
+        <p style="color: #111827; font-size: 16px; font-weight: 600; margin: 0; text-align: center;">
+          Sipariş listeniz oluşturuldu! ✅ <br>
+          <span style="color: #4b5563; font-weight: 400; font-size: 14px;">Tamamlamak için lütfen aşağıdaki butona tıklayın:</span>
+        </p>
+        <a href="${waUrl}" target="_blank" style="transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+          <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" style="width:80px;">
+        </a>
+        <div style="background:#e8f5e9; padding:10px 15px; border-radius:8px; color:#2e7d32; font-size:13px; text-align:center;">
+          Tıkladığınızda sipariş detayları WhatsApp'a aktarılacaktır.
+        </div>
       </div>
     `;
 
-    document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth" });
+    document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
   };
 });
