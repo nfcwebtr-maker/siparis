@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const STEP = 5;
   const MIN_QTY = 20;
-  const FREE_SHIP = 40;
+  const FREE_SHIP = 30;
   const SHIP_PRICE = 80;
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
@@ -183,4 +183,5 @@ Genel Toplam: ${grand} ${CURRENCY}
   };
 
 });
+
 
