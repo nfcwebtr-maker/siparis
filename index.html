@@ -3,186 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFC.web.tr Toplu Anahtarlık Siparişi</title>
-
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 26px;
-    }
-
-    .desc {
-      text-align: center;
-      margin: 10px auto 25px;
-      max-width: 500px;
-      font-size: 15px;
-      color: #444;
-    }
-
-    #formBox {
-      max-width: 500px;
-      margin: 0 auto 25px;
-      background: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-
-    #formBox input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-
-    #saveFormBtn {
-      width: 100%;
-      padding: 12px;
-      background: #444;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 20px;
-    }
-
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 15px;
-      padding: 15px;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .item {
-      position: relative;
-      background: #fff;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 0 6px rgba(0,0,0,0.1);
-    }
-
-    .item img {
-      width: 100%;
-      height: 140px;
-      object-fit: cover;
-    }
-
-    .item-title {
-      padding: 8px;
-      font-size: 14px;
-      font-weight: bold;
-      height: 50px;
-      overflow: hidden;
-    }
-
-    .controls {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px;
-      align-items: center;
-    }
-
-    .controls button {
-      width: 32px;
-      height: 32px;
-      border: none;
-      background: #333;
-      color: #fff;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 18px;
-    }
-
-    .controls textarea {
-      width: 45px;
-      height: 32px;
-      resize: none;
-      text-align: center;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      padding-top: 6px;
-    }
-
-    #createOrderBtn {
-      display: block;
-      width: 90%;
-      max-width: 400px;
-      margin: 25px auto;
-      padding: 14px;
-      background: #008f39;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-
-    #orderOutput {
-      width: 90%;
-      max-width: 500px;
-      height: 180px;
-      margin: 20px auto;
-      display: block;
-      padding: 10px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-    }
-
-    #summary {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    #summary img {
-      width: 80px;
-      cursor: pointer;
-    }
-  </style>
+  <title>NFC.web.tr Toplu Sipariş</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-  <h1>NFC.web.tr Toplu Anahtarlık Siparişi</h1>
-
-<p class="desc">
-  <strong>Toplu Sipariş Platformumuza Hoş Geldiniz!</strong><br>
-  İstediğiniz ürünün üzerine tıklayarak sepetinize kolayca adet ekleyebilirsiniz 
-  (Her tıklama +5 adet ekler). <br><br>
-  ✨ <strong>Minimum Sipariş:</strong> Sadece 20 adet.<br>
-  🚚 <strong>Ayrıcalık:</strong> 30 adet ve üzeri siparişlerinizde <strong>kargo ücretsizdir!</strong>
-</p>
-
-  <div id="formBox">
-    <input id="businessName" placeholder="Firma Adı">
-    <input id="address" placeholder="Adres">
-    <input id="recipient" placeholder="Alıcı Adı">
-    <input id="phone" placeholder="Telefon">
-    <button id="saveFormBtn">Bilgileri Kaydet</button>
+  <div id="statusBar" class="status-bar">
+    Sepetiniz: <span id="globalCount">0</span> Adet (Minimum: 20)
   </div>
 
-  <div class="grid" id="grid"></div>
+  <div class="wrap">
+    <h1>NFC.web.tr Toplu Anahtarlık Siparişi</h1>
 
-  <button id="createOrderBtn">Siparişi Oluştur</button>
+    <p class="desc">
+      <strong>Toplu Sipariş Platformumuza Hoş Geldiniz!</strong><br>
+      İstediğiniz ürünün üzerine tıklayarak sepetinize kolayca adet ekleyebilirsiniz 
+      (Her tıklama +5 adet ekler). <br><br>
+      ✨ <strong>Minimum Sipariş:</strong> Sadece 20 adet.<br>
+      🚚 <strong>Ayrıcalık:</strong> 30 adet ve üzeri siparişlerinizde <strong>kargo ücretsizdir!</strong>
+    </p>
 
-  <textarea id="orderOutput" readonly></textarea>
+    <div class="order-form">
+      <input id="businessName" type="text" placeholder="Firma Adı (Opsiyonel)">
+      <input id="address" type="text" placeholder="Teslimat Adresi">
+      <input id="recipient" type="text" placeholder="Alıcı Adı Soyadı">
+      <input id="phone" type="tel" placeholder="Telefon (05xx...)">
+      <button id="saveFormBtn">Bilgileri Kaydet</button>
+    </div>
 
-  <div id="summary"></div>
+    <div class="grid" id="grid"></div>
 
-  <script src="app.js?v=3"></script>
+    <button id="createOrderBtn">Siparişi Oluştur</button>
 
+    <textarea id="orderOutput" readonly placeholder="Sipariş özeti burada görünecek..."></textarea>
+    
+    <div id="summary"></div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>
-
-
