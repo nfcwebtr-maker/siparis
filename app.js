@@ -1,16 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   const STEP = 5;
-  const MIN_QTY = 20;      // Dein neues Minimum
-  const FREE_SHIP = 30;    // Dein neuer kostenloser Versand
+  const MIN_QTY = 20;      
+  const FREE_SHIP = 30;    
   const SHIP_PRICE = 80;
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
   const DEFAULT_PRICE = 40;
-
-  /* ================================
-     9 ÜRÜNLÜ LİSTE
-  ================================ */
 
   const PRODUCTS = [
     { id: "501", name: "Instagram Takipçi Artırma NFC Anahtarlık", price: 40, image: "https://cdn.myikas.com/images/f93197bd-a034-4081-b2aa-72d76eeab8f6/14a8bceb-49ce-4b13-9585-089636c03fef/1080/akilli-instagram-takipci-artirma-nfc-anahtarlik.webp" },
@@ -24,148 +20,125 @@ document.addEventListener("DOMContentLoaded", function() {
     { id: "517", name: "AB Negatif Kan Grubu Anahtarlık", price: 40, image: "https://cdn.myikas.com/images/f93197bd-a034-4081-b2aa-72d76eeab8f6/dcdc7276-d3f1-4f96-98d8-598d9df8d6a4/1080/ab-negatif-kan-grubu-medikal-aksesuar.webp" }
   ];
 
-  /* ================================
-     LOCALSTORAGE
-  ================================ */
+  const grid = document.getElementById("grid");
+  if (!grid) {
+      console.error("HATA: HTML içinde id='grid' olan element bulunamadı!");
+      return; 
+  }
 
-  ["businessName","address","recipient","phone"].forEach(f=>{
-    const el=document.getElementById(f);
-    const saved=localStorage.getItem(f);
-    if(saved) el.value=saved;
-  });
+  const qty = {};
 
-  document.getElementById("saveFormBtn").onclick=()=>{
-    ["businessName","address","recipient","phone"].forEach(f=>{
-      localStorage.setItem(f,document.getElementById(f).value);
-    });
-    alert("Bilgiler kaydedildi.");
-  };
-
-  /* ================================
-     GRID OLUŞTURMA
-  ================================ */
-
-  const grid=document.getElementById("grid");
-  const qty={};
-
-  PRODUCTS.forEach(p=>{
-    qty[p.id]=0;
-
-    const item=document.createElement("div");
-    item.className="item";
-
-    item.innerHTML=`
+  PRODUCTS.forEach(p => {
+    qty[p.id] = 0;
+    const item = document.createElement("div");
+    item.className = "item";
+    item.innerHTML = `
       <img src="${p.image}" alt="${p.name}">
       <div class="overlay"></div>
       <div class="item-title">${p.id} - ${p.name}</div>
       <div class="controls">
         <button class="add">+</button>
         <button class="remove" style="display:none;">-</button>
-        <textarea readonly>0</textarea>
+        <div class="qty-display">0</div>
       </div>
     `;
 
-    const overlay=item.querySelector(".overlay");
-    const add=item.querySelector(".add");
-    const remove=item.querySelector(".remove");
-    const ta=item.querySelector("textarea");
+    const overlay = item.querySelector(".overlay");
+    const addBtn = item.querySelector(".add");
+    const removeBtn = item.querySelector(".remove");
+    const display = item.querySelector(".qty-display");
 
-    // Funktion zum Hinzufügen (wird bei Klick auf Bild UND Button genutzt)
-    const addFn = (e) => {
-      if(e) e.stopPropagation(); // Verhindert doppeltes Auslösen
-      qty[p.id] += STEP;
-      ta.value = qty[p.id];
-      remove.style.display = "inline-block";
-      overlay.style.display = "block";
-      item.classList.add("active");
-    };
-
-    // Klick auf das gesamte Produkt-Feld (Bild inkl.)
-    item.onclick = addFn;
-
-    // Klick auf den + Button (ruft die gleiche Funktion auf)
-    add.onclick = addFn;
-
-    // Klick auf den - Button
-    remove.onclick = e => {
-      e.stopPropagation(); // WICHTIG: Verhindert, dass der Klick auf das Bild (addFn) ausgelöst wird
-      qty[p.id] -= STEP;
-      if(qty[p.id] < 0) qty[p.id] = 0;
-      ta.value = qty[p.id];
-      if(qty[p.id] === 0){
-        remove.style.display = "none";
+    const updateQty = (change) => {
+      qty[p.id] += change;
+      if (qty[p.id] < 0) qty[p.id] = 0;
+      
+      display.innerText = qty[p.id];
+      
+      if (qty[p.id] > 0) {
+        removeBtn.style.display = "inline-block";
+        overlay.style.display = "block";
+        item.classList.add("active");
+      } else {
+        removeBtn.style.display = "none";
         overlay.style.display = "none";
         item.classList.remove("active");
       }
     };
 
+    // Klick auf das ganze Item (Bild + Overlay) fügt hinzu
+    item.onclick = () => updateQty(STEP);
+
+    // Klick auf den Minus-Button zieht ab (Stops propagation!)
+    removeBtn.onclick = (e) => {
+      e.stopPropagation();
+      updateQty(-STEP);
+    };
+
     grid.appendChild(item);
   });
 
-  /* ================================
-     SİPARİŞ OLUŞTURMA
-  ================================ */
-
-  document.getElementById("createOrderBtn").onclick=()=>{
-
-    const total=Object.values(qty).reduce((a,b)=>a+b,0);
-
-    if(total < MIN_QTY){
-      alert(`Şu an sepetinizde ${total} adet ürün var.\nToplu sipariş verebilmek için minimum ${MIN_QTY} adet seçim yapmalısınız.`);
-      return;
+  // Formular Daten laden/speichern
+  ["businessName","address","recipient","phone"].forEach(f => {
+    const el = document.getElementById(f);
+    if(el) {
+      const saved = localStorage.getItem(f);
+      if(saved) el.value = saved;
     }
+  });
 
-    if(total < FREE_SHIP){
-      const diff = FREE_SHIP - total;
-      if(!confirm(`Siparişiniz ${total} adet.\n\n30 adede ulaşırsanız kargo ücretsiz olur!\n${diff} adet daha eklemek ister misiniz?\n\nTamam → Bu haliyle devam et\nİptal → Ürün eklemeye geri dön`)){
+  const saveBtn = document.getElementById("saveFormBtn");
+  if(saveBtn) {
+    saveBtn.onclick = () => {
+      ["businessName","address","recipient","phone"].forEach(f => {
+        const el = document.getElementById(f);
+        if(el) localStorage.setItem(f, el.value);
+      });
+      alert("Bilgiler kaydedildi.");
+    };
+  }
+
+  // Sipariş Oluşturma
+  const orderBtn = document.getElementById("createOrderBtn");
+  if(orderBtn) {
+    orderBtn.onclick = () => {
+      const total = Object.values(qty).reduce((a, b) => a + b, 0);
+
+      if (total < MIN_QTY) {
+        alert(`Sepetinizde ${total} adet var. Minimum ${MIN_QTY} adet gereklidir.`);
         return;
       }
-    }
 
-    let subtotal=0;
-    let text="";
-
-    PRODUCTS.forEach(p=>{
-      if(qty[p.id]>0){
-        const price=p.price ?? DEFAULT_PRICE;
-        const line=qty[p.id]*price;
-        subtotal+=line;
-        text+=`${p.id} - ${p.name}: ${qty[p.id]} adet x ${price} ${CURRENCY} = ${line} ${CURRENCY}\n`;
+      if (total < FREE_SHIP) {
+        if (!confirm(`${total} adet seçtiniz. 30 adette kargo ücretsiz! Devam edilsin mi?`)) return;
       }
-    });
 
-    const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
-    const grand = subtotal + shipping;
+      let subtotal = 0;
+      let text = "";
+      PRODUCTS.forEach(p => {
+        if (qty[p.id] > 0) {
+          const price = p.price || DEFAULT_PRICE;
+          const line = qty[p.id] * price;
+          subtotal += line;
+          text += `${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
+        }
+      });
 
-    let output = `
-NFC.web.tr Toplu Anahtarlık Siparişi
+      const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
+      const grand = subtotal + shipping;
 
-${document.getElementById("businessName").value}
-${document.getElementById("address").value}
-${document.getElementById("recipient").value}
-${document.getElementById("phone").value}
-
-${text}
-
-Toplam Adet: ${total}
-Ürün Toplamı: ${subtotal} ${CURRENCY}
-Kargo: ${shipping} ${CURRENCY}
-Genel Toplam: ${grand} ${CURRENCY}
-    `;
-
-    document.getElementById("orderOutput").value=output;
-
-    const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(output)}`;
-
-    document.getElementById("summary").innerHTML = `
-      <div style="display:flex; flex-direction:column; align-items:center; gap:12px; margin-top:20px;">
-        <a href="${wa}" target="_blank" style="text-align:center;">
-          <img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:80px;">
-        </a>
-        <div style="background:#e8f5e9; border:1px solid #c8e6c9; padding:14px 18px; border-radius:10px; max-width:320px; text-align:center; font-size:15px; color:#2e7d32; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
-          Siparişiniz hazır! WhatsApp butonuna tıklayarak gönderebilirsiniz.
-        </div>
-      </div>
-    `;
-
-    // Sanftes Scrollen
+      const output = `NFC.web.tr Sipariş\n\nFirma: ${document.getElementById("businessName").value}\nAlıcı: ${document.getElementById("recipient").value}\n\n${text}\nToplam: ${grand} ${CURRENCY}`;
+      
+      const outEl = document.getElementById("orderOutput");
+      if(outEl) {
+          outEl.value = output;
+          const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(output)}`;
+          document.getElementById("summary").innerHTML = `
+            <div style="text-align:center; margin-top:20px;">
+              <a href="${wa}" target="_blank"><img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:80px;"></a>
+              <p>Sipariş hazır! WhatsApp ile gönderin.</p>
+            </div>`;
+          outEl.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+  }
+});
