@@ -21,13 +21,9 @@ document.addEventListener("DOMContentLoaded", function() {
   ];
 
   const grid = document.getElementById("grid");
-  if (!grid) {
-      console.error("HATA: HTML içinde id='grid' olan element bulunamadı!");
-      return; 
-  }
-
   const qty = {};
 
+  // Produkte rendern
   PRODUCTS.forEach(p => {
     qty[p.id] = 0;
     const item = document.createElement("div");
@@ -35,110 +31,107 @@ document.addEventListener("DOMContentLoaded", function() {
     item.innerHTML = `
       <img src="${p.image}" alt="${p.name}">
       <div class="overlay"></div>
+      <div class="item-badge" style="display:none;">0 Adet</div>
       <div class="item-title">${p.id} - ${p.name}</div>
       <div class="controls">
+        <button class="remove" style="visibility:hidden;">-</button>
+        <span class="item-qty">0</span>
         <button class="add">+</button>
-        <button class="remove" style="display:none;">-</button>
-        <div class="qty-display">0</div>
       </div>
     `;
 
     const overlay = item.querySelector(".overlay");
-    const addBtn = item.querySelector(".add");
+    const badge = item.querySelector(".item-badge");
     const removeBtn = item.querySelector(".remove");
-    const display = item.querySelector(".qty-display");
+    const qtySpan = item.querySelector(".item-qty");
 
-    const updateQty = (change) => {
-      qty[p.id] += change;
-      if (qty[p.id] < 0) qty[p.id] = 0;
-      
-      display.innerText = qty[p.id];
+    const updateUI = () => {
+      qtySpan.innerText = qty[p.id];
+      badge.innerText = qty[p.id] + " Adet";
       
       if (qty[p.id] > 0) {
-        removeBtn.style.display = "inline-block";
-        overlay.style.display = "block";
         item.classList.add("active");
+        overlay.style.display = "block";
+        badge.style.display = "block";
+        removeBtn.style.visibility = "visible";
       } else {
-        removeBtn.style.display = "none";
-        overlay.style.display = "none";
         item.classList.remove("active");
+        overlay.style.display = "none";
+        badge.style.display = "none";
+        removeBtn.style.visibility = "hidden";
       }
+      updateGlobalStatus();
     };
 
-    // Klick auf das ganze Item (Bild + Overlay) fügt hinzu
-    item.onclick = () => updateQty(STEP);
-
-    // Klick auf den Minus-Button zieht ab (Stops propagation!)
-    removeBtn.onclick = (e) => {
-      e.stopPropagation();
-      updateQty(-STEP);
-    };
+    item.onclick = () => { qty[p.id] += STEP; updateUI(); };
+    removeBtn.onclick = (e) => { e.stopPropagation(); qty[p.id] -= STEP; if(qty[p.id]<0) qty[p.id]=0; updateUI(); };
 
     grid.appendChild(item);
   });
 
-  // Formular Daten laden/speichern
+  function updateGlobalStatus() {
+    const total = Object.values(qty).reduce((a, b) => a + b, 0);
+    const bar = document.getElementById("statusBar");
+    const count = document.getElementById("globalCount");
+    count.innerText = total;
+
+    if (total >= MIN_QTY) {
+      bar.classList.add("success");
+      bar.innerHTML = `✅ Sepetiniz: ${total} Adet (Minimum Tamam!)`;
+    } else {
+      bar.classList.remove("success");
+      bar.innerHTML = `Sepetiniz: ${total} Adet (Minimum için ${MIN_QTY - total} daha ekleyin)`;
+    }
+  }
+
+  // Formular-Logik
   ["businessName","address","recipient","phone"].forEach(f => {
     const el = document.getElementById(f);
-    if(el) {
-      const saved = localStorage.getItem(f);
-      if(saved) el.value = saved;
-    }
+    const saved = localStorage.getItem(f);
+    if(saved) el.value = saved;
   });
 
-  const saveBtn = document.getElementById("saveFormBtn");
-  if(saveBtn) {
-    saveBtn.onclick = () => {
-      ["businessName","address","recipient","phone"].forEach(f => {
-        const el = document.getElementById(f);
-        if(el) localStorage.setItem(f, el.value);
-      });
-      alert("Bilgiler kaydedildi.");
-    };
-  }
+  document.getElementById("saveFormBtn").onclick = () => {
+    ["businessName","address","recipient","phone"].forEach(f => {
+      localStorage.setItem(f, document.getElementById(f).value);
+    });
+    alert("Bilgiler tarayıcıya kaydedildi.");
+  };
 
   // Sipariş Oluşturma
-  const orderBtn = document.getElementById("createOrderBtn");
-  if(orderBtn) {
-    orderBtn.onclick = () => {
-      const total = Object.values(qty).reduce((a, b) => a + b, 0);
+  document.getElementById("createOrderBtn").onclick = () => {
+    const total = Object.values(qty).reduce((a, b) => a + b, 0);
 
-      if (total < MIN_QTY) {
-        alert(`Sepetinizde ${total} adet var. Minimum ${MIN_QTY} adet gereklidir.`);
-        return;
+    if (total < MIN_QTY) {
+      alert(`Sepetinizde sadece ${total} adet var. Devam etmek için en az ${MIN_QTY} adet seçmelisiniz.`);
+      return;
+    }
+
+    let subtotal = 0;
+    let text = "";
+    PRODUCTS.forEach(p => {
+      if (qty[p.id] > 0) {
+        const line = qty[p.id] * p.price;
+        subtotal += line;
+        text += `• ${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
       }
+    });
 
-      if (total < FREE_SHIP) {
-        if (!confirm(`${total} adet seçtiniz. 30 adette kargo ücretsiz! Devam edilsin mi?`)) return;
-      }
+    const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
+    const grandTotal = subtotal + shipping;
 
-      let subtotal = 0;
-      let text = "";
-      PRODUCTS.forEach(p => {
-        if (qty[p.id] > 0) {
-          const price = p.price || DEFAULT_PRICE;
-          const line = qty[p.id] * price;
-          subtotal += line;
-          text += `${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
-        }
-      });
+    const summaryText = `NFC.web.tr Yeni Sipariş!\n\nFirma: ${document.getElementById("businessName").value}\nAlıcı: ${document.getElementById("recipient").value}\nAdres: ${document.getElementById("address").value}\nTel: ${document.getElementById("phone").value}\n\nÜrünler:\n${text}\nToplam Adet: ${total}\nKargo: ${shipping} ${CURRENCY}\nGenel Toplam: ${grandTotal} ${CURRENCY}`;
 
-      const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
-      const grand = subtotal + shipping;
+    document.getElementById("orderOutput").value = summaryText;
+    const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(summaryText)}`;
 
-      const output = `NFC.web.tr Sipariş\n\nFirma: ${document.getElementById("businessName").value}\nAlıcı: ${document.getElementById("recipient").value}\n\n${text}\nToplam: ${grand} ${CURRENCY}`;
-      
-      const outEl = document.getElementById("orderOutput");
-      if(outEl) {
-          outEl.value = output;
-          const wa = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(output)}`;
-          document.getElementById("summary").innerHTML = `
-            <div style="text-align:center; margin-top:20px;">
-              <a href="${wa}" target="_blank"><img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:80px;"></a>
-              <p>Sipariş hazır! WhatsApp ile gönderin.</p>
-            </div>`;
-          outEl.scrollIntoView({ behavior: "smooth" });
-      }
-    };
-  }
+    document.getElementById("summary").innerHTML = `
+      <div style="text-align:center; margin: 30px 0;">
+        <a href="${waUrl}" target="_blank"><img src="https://izbirakan.com/wp-content/uploads/2025/08/whatsapp-ikon.png" style="width:100px;"></a>
+        <p style="color: #059669; font-weight: bold;">Siparişiniz hazır! Yukarıdaki WhatsApp ikonuna tıklayarak bize iletin.</p>
+      </div>
+    `;
+
+    document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth" });
+  };
 });
