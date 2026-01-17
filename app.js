@@ -1,3 +1,4 @@
+// 1. VERİLERİNİZ: Buradaki örnek verileri silip kendi ürün listenizi yapıştırın
 document.addEventListener("DOMContentLoaded", function() {
 
   const STEP = 5;
@@ -51,150 +52,111 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   ];
 
-  const container = document.getElementById("categoriesContainer");
-  const qty = {};
-  const initialVisibleLimit = window.innerWidth <= 500 ? 2 : 4;
+// 2. SEPET VE DURUM YÖNETİMİ
+let cart = {}; 
+const WHATSAPP_NUMBER = "908503463240";
 
-  // ÜRÜNLERİ OLUŞTURMA DÖNGÜSÜ
-  CATEGORIES.forEach(cat => {
-    const section = document.createElement("div");
-    section.className = "category-section";
-    section.innerHTML = `<h2 class="category-title">${cat.name}</h2>`;
-    const grid = document.createElement("div");
-    grid.className = "grid";
-    const currentStep = cat.name === "Başlangıç Setleri ve Standlar" ? 1 : STEP;
+// 3. ARAYÜZÜ OLUŞTURMA (RENDER)
+function renderUI() {
+    const container = document.getElementById('categoriesContainer');
+    container.innerHTML = ""; 
 
-    cat.products.forEach((p, index) => {
-      qty[p.id] = 0;
-      const item = document.createElement("div");
-      item.className = `item ${index >= initialVisibleLimit ? 'hidden' : ''}`;
-      
-      item.innerHTML = `
-        <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x169?text=Resim+Yok'">
-        <div class="item-badge" style="display:none;">0 Adet</div>
-        <div class="item-info">
-            <span class="item-title">${p.id} - ${p.name}</span>
-            <span class="item-price">${p.price} TL <small style="font-size:10px; color:#6b7280; font-weight:400;">/ Adet</small></span>
-        </div>
-        <div class="controls">
-          <button class="remove" style="visibility:hidden;">-</button>
-          <span class="item-qty">0</span>
-          <button class="add">+</button>
-        </div>
-      `;
-
-      const badge = item.querySelector(".item-badge");
-      const removeBtn = item.querySelector(".remove");
-      const qtySpan = item.querySelector(".item-qty");
-
-      const updateItemUI = () => {
-        qtySpan.innerText = qty[p.id];
-        badge.innerText = qty[p.id] + " Adet";
-        if (qty[p.id] > 0) {
-          item.classList.add("active");
-          badge.style.display = "block";
-          removeBtn.style.visibility = "visible";
-        } else {
-          item.classList.remove("active");
-          badge.style.display = "none";
-          removeBtn.style.visibility = "hidden";
+    categories.forEach(cat => {
+        const block = document.createElement('div');
+        block.className = 'category-block';
+        
+        // Kategori Başlığı ve Liste Başlangıcı
+        let html = `<div class="category-title">${cat.name}</div>`;
+        html += `<div class="product-list">`;
+        
+        cat.products.forEach(prod => {
+            html += `
+                <div class="product-item">
+                    <img src="${prod.img}" class="product-img" alt="${prod.name}">
+                    <div class="product-info">
+                        <div class="product-name">${prod.name}</div>
+                        <div class="product-price">${prod.price} TL</div>
+                    </div>
+                    <div class="product-controls">
+                        <button onclick="updateCart(${prod.id}, -1, '${prod.name}', ${prod.price})">-</button>
+                        <span id="qty-${prod.id}">${cart[prod.id]?.qty || 0}</span>
+                        <button onclick="updateCart(${prod.id}, 1, '${prod.name}', ${prod.price})">+</button>
+                    </div>
+                </div>`;
+        });
+        
+        html += `</div>`; // .product-list bitiş
+        
+        // Eğer 2'den fazla ürün varsa "Daha Fazla Gör" butonu ekle
+        if(cat.products.length > 2) {
+            html += `<button class="show-more-btn" onclick="toggleList(this)">Daha Fazla Gör...</button>`;
         }
-        updateGlobalStatus();
-      };
 
-      item.onclick = () => { qty[p.id] += currentStep; updateItemUI(); };
-      removeBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        qty[p.id] -= currentStep; 
-        if(qty[p.id] < 0) qty[p.id] = 0; 
-        updateItemUI(); 
-      };
-      grid.appendChild(item);
+        block.innerHTML = html;
+        container.appendChild(block);
     });
+}
 
-    section.appendChild(grid);
-    if (cat.products.length > initialVisibleLimit) {
-      const btn = document.createElement("button");
-      btn.className = "show-more-btn";
-      btn.innerText = "Tüm Ürünleri Göster";
-      btn.onclick = () => {
-        grid.querySelectorAll(".item.hidden").forEach(el => el.classList.remove("hidden"));
-        btn.style.display = "none";
-      };
-      section.appendChild(btn);
+// 4. SEPET GÜNCELLEME VE HESAPLAMA
+window.updateCart = function(id, change, name, price) {
+    if (!cart[id]) {
+        cart[id] = { qty: 0, name: name, price: price };
     }
-    container.appendChild(section);
-  });
+    
+    cart[id].qty += change;
+    if (cart[id].qty < 0) cart[id].qty = 0;
 
-  // STATUS BAR GÜNCELLEME (İSTEDİĞİNİZ FORMAT)
-  function updateGlobalStatus() {
-    let totalPrice = 0;
-    CATEGORIES.forEach(cat => {
-      cat.products.forEach(p => {
-        if (qty[p.id] > 0) totalPrice += (qty[p.id] * p.price);
-      });
-    });
+    // Arayüzdeki sayıyı güncelle
+    document.getElementById(`qty-${id}`).innerText = cart[id].qty;
+    calculateTotals();
+};
 
-    const bar = document.getElementById("statusBar");
-    if(!bar) return;
-
-    if (totalPrice >= FREE_SHIP_THRESHOLD) {
-      bar.classList.add("success");
-      bar.innerHTML = `🚀 Sepet: ${totalPrice} TL | Kargo Ücretsiz!`;
-    } else {
-      bar.classList.remove("success");
-      const diff = FREE_SHIP_THRESHOLD - totalPrice;
-      bar.innerHTML = `Sepet: ${totalPrice} TL | Ücretsiz Kargo için ${diff} TL daha`;
-    }
-  }
-
-  // FORM KAYIT
-  ["businessName", "address", "recipient", "phone"].forEach(f => {
-    const el = document.getElementById(f);
-    if(el) {
-      el.value = localStorage.getItem(f) || "";
-      el.addEventListener("input", () => localStorage.setItem(f, el.value));
-    }
-  });
-
-  // SİPARİŞ OLUŞTURMA
-  document.getElementById("createOrderBtn").onclick = () => {
+function calculateTotals() {
     let totalQty = 0;
-    let subtotal = 0;
-    let productLines = "";
-    CATEGORIES.forEach(cat => {
-      cat.products.forEach(p => {
-        if (qty[p.id] > 0) {
-          const lineTotal = qty[p.id] * p.price;
-          totalQty += qty[p.id];
-          subtotal += lineTotal;
-          productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
+    let totalPrice = 0;
+
+    for (let id in cart) {
+        totalQty += cart[id].qty;
+        totalPrice += (cart[id].qty * cart[id].price);
+    }
+
+    // Status Bar Güncelleme
+    document.getElementById('globalCount').innerText = totalQty;
+    document.getElementById('globalPrice').innerText = totalPrice;
+}
+
+// 5. AÇ-KAPAT (SHOW MORE) FONKSİYONU
+window.toggleList = function(btn) {
+    const list = btn.previousElementSibling;
+    list.classList.toggle('expanded');
+    btn.innerText = list.classList.contains('expanded') ? 'Daha Az Göster' : 'Daha Fazla Gör...';
+};
+
+// 6. WHATSAPP SİPARİŞ OLUŞTURMA
+document.getElementById('createOrderBtn').addEventListener('click', () => {
+    let orderText = "Merhaba, yeni bir siparişim var:%0A%0A";
+    let hasItems = false;
+
+    for (let id in cart) {
+        if (cart[id].qty > 0) {
+            orderText += `- ${cart[id].name} (${cart[id].qty} Adet)%0A`;
+            hasItems = true;
         }
-      });
-    });
+    }
 
-    if (totalQty === 0) { alert(`Lütfen ürün seçiniz.`); return; }
-    const shipping = subtotal >= FREE_SHIP_THRESHOLD ? 0 : SHIP_PRICE;
-    const summaryText = `NFC.web.tr Yeni Sipariş!\n\n` +
-      `Firma: ${document.getElementById("businessName").value}\n` +
-      `Alıcı: ${document.getElementById("recipient").value}\n` +
-      `Tel: ${document.getElementById("phone").value}\n` +
-      `Adres: ${document.getElementById("address").value}\n\n` +
-      `Ürünler:\n${productLines}\n` +
-      `------------------------\n` +
-      `Ara Toplam: ${subtotal} TL\n` +
-      `Kargo: ${shipping === 0 ? 'Ücretsiz' : shipping + ' TL'}\n` +
-      `Genel Toplam: ${subtotal + shipping} TL`;
+    if (!hasItems) {
+        alert("Lütfen önce sepetinize ürün ekleyin!");
+        return;
+    }
 
-    document.getElementById("orderOutput").value = summaryText;
-    const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(summaryText)}`;
-    document.getElementById("summary").innerHTML = `
-      <div style="display:flex; flex-direction:column; align-items:center; gap:15px; margin-top:30px; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); border:1px solid #eee;">
-        <p style="color: #111827; font-size: 16px; font-weight: 600; text-align: center;">Siparişiniz Hazır! ✅</p>
-        <a href="${waUrl}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="wa-pulse" style="width:80px;"></a>
-      </div>
-    `;
-    document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
-  };
+    const business = document.getElementById('businessName').value;
+    const address = document.getElementById('address').value;
+    const recipient = document.getElementById('recipient').value;
+    
+    orderText += `%0A*Müşteri Bilgileri:*%0AFirma: ${business}%0AAlıcı: ${recipient}%0AAdres: ${address}`;
+
+    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${orderText}`;
 });
 
+// Sayfa yüklendiğinde başlat
+document.addEventListener('DOMContentLoaded', renderUI);
