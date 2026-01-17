@@ -3,12 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
   const STEP = 5;
   const MIN_QTY = 20;      
   const FREE_SHIP = 30;    
-  const SHIP_PRICE = 80;
+  const SHIP_PRICE = 100;
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
-  const DEFAULT_PRICE = 40;
 
-  // KATEGORİZE EDİLMİŞ ÜRÜNLER
   const CATEGORIES = [
     {
       name: "Starter Packs ve Standlar",
@@ -58,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const container = document.getElementById("categoriesContainer");
   const qty = {};
 
-  // KATEGORİLERİ OLUŞTUR
   CATEGORIES.forEach(cat => {
     const section = document.createElement("div");
     section.className = "category-section";
@@ -67,10 +64,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const grid = document.createElement("div");
     grid.className = "grid";
 
+    // Schrittweite bestimmen: Starter Packs = 1, Rest = 5
+    const currentStep = cat.name === "Starter Packs ve Standlar" ? 1 : STEP;
+
     cat.products.forEach((p, index) => {
       qty[p.id] = 0;
       const item = document.createElement("div");
-      item.className = `item ${index >= 4 ? 'hidden' : ''}`; // İlk 4'ten sonrasını gizle
+      item.className = `item ${index >= 4 ? 'hidden' : ''}`;
       item.innerHTML = `
         <img src="${p.image}" alt="${p.name}">
         <div class="item-badge" style="display:none;">0 Adet</div>
@@ -101,15 +101,19 @@ document.addEventListener("DOMContentLoaded", function() {
         updateGlobalStatus();
       };
 
-      item.onclick = () => { qty[p.id] += STEP; updateItemUI(); };
-      removeBtn.onclick = (e) => { e.stopPropagation(); qty[p.id] -= STEP; if(qty[p.id]<0) qty[p.id]=0; updateItemUI(); };
+      item.onclick = () => { qty[p.id] += currentStep; updateItemUI(); };
+      removeBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        qty[p.id] -= currentStep; 
+        if(qty[p.id] < 0) qty[p.id] = 0; 
+        updateItemUI(); 
+      };
       
       grid.appendChild(item);
     });
 
     section.appendChild(grid);
 
-    // EĞER 4'TEN FAZLA ÜRÜN VARSA BUTON EKLE
     if (cat.products.length > 4) {
       const btn = document.createElement("button");
       btn.className = "show-more-btn";
@@ -140,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // FORM AUTO-SAVE
+  // Auto-Save Form
   ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
     if(el) {
@@ -149,7 +153,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // SIPARİŞ OLUŞTURMA
   document.getElementById("createOrderBtn").onclick = () => {
     const total = Object.values(qty).reduce((a, b) => a + b, 0);
     if (total < MIN_QTY) { alert(`En az ${MIN_QTY} adet seçmelisiniz.`); return; }
