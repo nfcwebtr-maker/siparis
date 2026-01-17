@@ -47,6 +47,8 @@ h1 { color: #111; margin-bottom: 10px; }
   width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block;
 }
 
+.item.hidden { display: none; } /* Ürünleri gizlemek için kritik sınıf */
+
 .item-badge {
   position: absolute; top: 10px; left: 10px; background: var(--main-green);
   color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; z-index: 10;
@@ -58,19 +60,16 @@ h1 { color: #111; margin-bottom: 10px; }
 
 .show-more-btn {
   display: block; width: 220px; margin: 20px auto; padding: 12px;
-  background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 8px;
-  cursor: pointer; color: #4b5563; font-weight: 600;
+  background: white; border: 1px solid var(--main-green); border-radius: 8px;
+  cursor: pointer; color: var(--main-green); font-weight: 600;
+  transition: all 0.2s;
 }
+.show-more-btn:hover { background: var(--main-green); color: white; }
 
 #createOrderBtn {
   display: block; width: 100%; max-width: 400px; margin: 40px auto;
   padding: 16px; background: #111827; color: white; border: none;
   border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer;
-}
-
-#orderOutput {
-  width: 100%; min-height: 180px; margin-top: 20px; border-radius: 8px;
-  padding: 15px; border: 1px solid #d1d5db; font-family: monospace; font-size: 13px;
 }
 
 .wa-pulse { animation: pulse-green 2s infinite; border-radius: 50%; }
