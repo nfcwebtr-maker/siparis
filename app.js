@@ -44,7 +44,7 @@ const CATEGORIES = [
   {
     name: "Veteriner ve PetShop Anahtarlıkları",
     products: [
-      { id: "531", name: "NFC Pati Beyaz Pembe", price: 40, image: "assets/000.png", step: 5 }
+      { id: "531", name: "NFC Pati Beyaz Pembe", price: 40, image: "assets/531.png", step: 5 }
       { id: "532", name: "NFC Pati Siyah Pembe", price: 40, image: "assets/000.png", step: 5 }
     ]
   }
@@ -165,6 +165,7 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
 
