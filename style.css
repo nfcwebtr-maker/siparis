@@ -1,79 +1,151 @@
+/* Ana Değişkenler - Renk ve Font Ayarları */
 :root {
-  --gap: 15px;
-  --cols: 4;
-  --maxw: 1100px;
-  --radius: 12px;
-  --main-green: #059669;
-  --status-bg: #111827;
+    --primary-color: #2563eb; /* Kurumsal Mavi */
+    --secondary-color: #0f172a; /* Koyu Lacivert */
+    --accent-color: #00d2ff;
+    --bg-light: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --white: #ffffff;
+    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --border-radius: 12px;
 }
 
-body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; margin: 0; padding-top: 60px; }
-
-.status-bar {
-  position: fixed; top: 0; left: 0; width: 100%;
-  background: var(--status-bg); color: white; padding: 15px;
-  text-align: center; z-index: 1000; font-weight: bold;
-  display: flex; justify-content: center; gap: 20px;
-}
-.status-bar.success { background: var(--main-green); }
-
-.wrap { max-width: var(--maxw); margin: 0 auto; padding: 20px; }
-.header-section { text-align: center; margin-bottom: 40px; }
-h1 { color: #111; margin-bottom: 10px; }
-.desc { color: #4b5563; line-height: 1.6; max-width: 700px; margin: 0 auto; }
-
-.category-title {
-  margin: 40px 0 15px; padding-bottom: 8px;
-  border-bottom: 2px solid #e5e7eb; font-size: 20px; color: #111827;
+/* Genel Sıfırlama */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
+body {
+    background-color: var(--bg-light);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* Konteynır Yapısı */
+.container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Başlık Bölümü */
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: var(--secondary-color);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.5rem;
+}
+
+.header p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Ürün Kartı Stili */
+.product-card {
+    background: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Form Elemanları Stili */
 .order-form {
-  background: white; padding: 20px; border-radius: var(--radius);
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px;
-  max-width: 500px; margin: 0 auto 30px;
-}
-.order-form input { padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; }
-
-.grid { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--gap); }
-
-.item {
-  position: relative; background: white; border-radius: var(--radius);
-  overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  cursor: pointer; transition: transform 0.2s; border: 2px solid transparent;
-}
-.item.active { border-color: var(--main-green); transform: scale(1.02); }
-
-.item img { 
-  width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; display: block;
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.item.hidden { display: none; } /* Ürünleri gizlemek için kritik sınıf */
-
-.item-badge {
-  position: absolute; top: 10px; left: 10px; background: var(--main-green);
-  color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; z-index: 10;
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
-.item-info { padding: 12px; }
-.item-title { font-size: 13px; font-weight: 600; color: #1f2937; margin-bottom: 4px; display: block; height: 32px; overflow: hidden; }
-.item-price { font-size: 14px; color: var(--main-green); font-weight: 700; }
-
-.show-more-btn {
-  display: block; width: 220px; margin: 20px auto; padding: 12px;
-  background: white; border: 1px solid var(--main-green); border-radius: 8px;
-  cursor: pointer; color: var(--main-green); font-weight: 600;
-  transition: all 0.2s;
-}
-.show-more-btn:hover { background: var(--main-green); color: white; }
-
-#createOrderBtn {
-  display: block; width: 100%; max-width: 400px; margin: 40px auto;
-  padding: 16px; background: #111827; color: white; border: none;
-  border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer;
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--secondary-color);
 }
 
-.wa-pulse { animation: pulse-green 2s infinite; border-radius: 50%; }
-@keyframes pulse-green { 0% { transform: scale(1); } 70% { transform: scale(1.05); } 100% { transform: scale(1); } }
+input, select, textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
 
-@media (max-width: 900px) { :root { --cols: 2; } }
-@media (max-width: 500px) { :root { --cols: 1; } }
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    ring: 2px solid rgba(37, 99, 235, 0.2);
+}
+
+/* Buton Stili */
+.btn {
+    display: inline-block;
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: var(--white);
+    text-align: center;
+    font-weight: 700;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* WhatsApp Hızlı İletişim Butonu (Sabit) */
+.whatsapp-float {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background-color: #25d366;
+    color: white;
+    padding: 1rem;
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    z-index: 1000;
+}
+
+/* Mobil Uyumluluk */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 1.8rem;
+    }
+    .container {
+        padding: 1rem;
+    }
+}
