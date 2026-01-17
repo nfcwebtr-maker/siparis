@@ -13,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       name: "Starter Packs ve Standlar",
       products: [
-        { id: "599", name: "NFC Starter Pack", price: 1600, image: "assets/599.png" },
-        { id: "598", name: "NFC Masa Standı", price: 200, image: "assets/598.png" }
+        { id: "599", name: "NFC Anahtarlık Starter Pack", price: 1600, image: "assets/599.png" },
+        { id: "598", name: "Anahtarlık Teşhir Standı -Boş-", price: 200, image: "assets/598.png" }
       ]
     },
     {
@@ -206,3 +206,4 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
   };
 });
+
