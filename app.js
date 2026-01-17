@@ -1,19 +1,15 @@
 document.addEventListener("DOMContentLoaded", function() {
 
-  // ==========================================
-  // 1. KONFIGURASYON & DEĞERLER
-  // ==========================================
   const STEP = 5;
   const FREE_SHIP_THRESHOLD = 1500; 
   const SHIP_PRICE = 120;           
-  const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
 
   const CATEGORIES = [
     {
       name: "Starter Packs ve Standlar",
       products: [
-        { id: "599", name: "NFC Anahtarlık Starter Pack", price: 1600, image: "assets/599.png" },
+        { id: "599", name: "SOS ve Sosyal Medya Başlangıç Seti", price: 1600, image: "assets/599.png" },
         { id: "598", name: "Anahtarlık Teşhir Standı -Boş-", price: 200, image: "assets/598.png" }
       ]
     },
@@ -58,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
   const container = document.getElementById("categoriesContainer");
   const qty = {};
 
-  // PRODUKTE RENDERN
   CATEGORIES.forEach(cat => {
     const section = document.createElement("div");
     section.className = "category-section";
@@ -72,9 +67,12 @@ document.addEventListener("DOMContentLoaded", function() {
       const item = document.createElement("div");
       item.className = `item ${index >= 4 ? 'hidden' : ''}`;
       item.innerHTML = `
-        <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x200?text=Resim+Yok'">
+        <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x169?text=Resim+Yok'">
         <div class="item-badge" style="display:none;">0 Adet</div>
-        <div class="item-title">${p.id} - ${p.name}</div>
+        <div class="item-info">
+            <span class="item-title">${p.name}</span>
+            <span class="item-price">${p.price} TL <small style="font-size:10px; color:#6b7280; font-weight:400;">/ Adet</small></span>
+        </div>
         <div class="controls">
           <button class="remove" style="visibility:hidden;">-</button>
           <span class="item-qty">0</span>
@@ -115,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (cat.products.length > 4) {
       const btn = document.createElement("button");
       btn.className = "show-more-btn";
-      btn.innerText = "Daha Fazla Ürün Göster";
+      btn.innerText = "Daha Fazla Göster";
       btn.onclick = () => {
         grid.querySelectorAll(".item.hidden").forEach(el => el.classList.remove("hidden"));
         btn.style.display = "none";
@@ -125,11 +123,9 @@ document.addEventListener("DOMContentLoaded", function() {
     container.appendChild(section);
   });
 
-  // STATUS BERECHNUNG
   function updateGlobalStatus() {
     let totalQty = 0;
     let totalPrice = 0;
-
     CATEGORIES.forEach(cat => {
       cat.products.forEach(p => {
         if (qty[p.id] > 0) {
@@ -144,15 +140,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (totalPrice >= FREE_SHIP_THRESHOLD) {
       bar.classList.add("success");
-      bar.innerHTML = `🚀 ${totalQty} Adet | ${totalPrice} TL (Bedava Kargo!)`;
+      bar.innerHTML = `🚀 ${totalQty} Ürün | ${totalPrice} TL (Bedava Kargo!)`;
     } else {
       bar.classList.remove("success");
       const diff = FREE_SHIP_THRESHOLD - totalPrice;
-      bar.innerHTML = `Sepetiniz: ${totalPrice} TL | Bedava kargo için ${diff} TL daha ekleyin`;
+      bar.innerHTML = `Sepet: ${totalPrice} TL | Kargo bedava için ${diff} TL daha ekleyin`;
     }
   }
 
-  // Auto-Save Form
   ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
     if(el) {
@@ -161,28 +156,23 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // SIPARIŞ OLUŞTURMA
   document.getElementById("createOrderBtn").onclick = () => {
     let totalQty = 0;
     let subtotal = 0;
     let productLines = "";
-
     CATEGORIES.forEach(cat => {
       cat.products.forEach(p => {
         if (qty[p.id] > 0) {
           const lineTotal = qty[p.id] * p.price;
           totalQty += qty[p.id];
           subtotal += lineTotal;
-          productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
+          productLines += `• ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
         }
       });
     });
 
-    if (totalQty === 0) { alert(`Lütfen en az bir ürün seçiniz.`); return; }
-
+    if (totalQty === 0) { alert(`Lütfen ürün seçiniz.`); return; }
     const shipping = subtotal >= FREE_SHIP_THRESHOLD ? 0 : SHIP_PRICE;
-    const grandTotal = subtotal + shipping;
-
     const summaryText = `NFC.web.tr Yeni Sipariş!\n\n` +
       `Firma: ${document.getElementById("businessName").value}\n` +
       `Alıcı: ${document.getElementById("recipient").value}\n` +
@@ -191,19 +181,17 @@ document.addEventListener("DOMContentLoaded", function() {
       `Ürünler:\n${productLines}\n` +
       `------------------------\n` +
       `Ara Toplam: ${subtotal} TL\n` +
-      `Kargo: ${shipping === 0 ? 'Ücretsiz' : shipping + ' TL'}\n` +
-      `Genel Toplam: ${grandTotal} TL`;
+      `Kargo: ${shipping === 0 ? 'Bedava' : shipping + ' TL'}\n` +
+      `Genel Toplam: ${subtotal + shipping} TL`;
 
     document.getElementById("orderOutput").value = summaryText;
     const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(summaryText)}`;
-
     document.getElementById("summary").innerHTML = `
       <div style="display:flex; flex-direction:column; align-items:center; gap:15px; margin-top:30px; padding:20px; background:#fff; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.05); border:1px solid #eee;">
-        <p style="color: #111827; font-size: 16px; font-weight: 600; text-align: center;">Sipariş listeniz hazır! ✅</p>
+        <p style="color: #111827; font-size: 16px; font-weight: 600; text-align: center;">Siparişiniz Hazır! ✅</p>
         <a href="${waUrl}" target="_blank"><img src="https://cdn-icons-png.flaticon.com/512/733/733585.png" class="wa-pulse" style="width:80px;"></a>
       </div>
     `;
     document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
   };
 });
-
