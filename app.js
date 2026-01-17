@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
   const container = document.getElementById("categoriesContainer");
   const qty = {};
 
+  // Ekran boyutuna göre başlangıç limiti: Mobilde 2, Masaüstünde 4
+  const initialVisibleLimit = window.innerWidth <= 500 ? 2 : 4;
+
   CATEGORIES.forEach(cat => {
     const section = document.createElement("div");
     section.className = "category-section";
@@ -65,7 +68,9 @@ document.addEventListener("DOMContentLoaded", function() {
     cat.products.forEach((p, index) => {
       qty[p.id] = 0;
       const item = document.createElement("div");
-      item.className = `item ${index >= 4 ? 'hidden' : ''}`;
+      // Başlangıç limitine göre 'hidden' sınıfını ekle
+      item.className = `item ${index >= initialVisibleLimit ? 'hidden' : ''}`;
+      
       item.innerHTML = `
         <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x169?text=Resim+Yok'">
         <div class="item-badge" style="display:none;">0 Adet</div>
@@ -110,16 +115,19 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     section.appendChild(grid);
-    if (cat.products.length > 4) {
+
+    // Eğer ürün sayısı limitten fazlaysa "Daha Fazla Göster" butonu ekle
+    if (cat.products.length > initialVisibleLimit) {
       const btn = document.createElement("button");
       btn.className = "show-more-btn";
-      btn.innerText = "Daha Fazla Göster";
+      btn.innerText = "Tüm Ürünleri Göster";
       btn.onclick = () => {
         grid.querySelectorAll(".item.hidden").forEach(el => el.classList.remove("hidden"));
         btn.style.display = "none";
       };
       section.appendChild(btn);
     }
+
     container.appendChild(section);
   });
 
