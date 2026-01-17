@@ -38,7 +38,7 @@ const CATEGORIES = [
   {
     name: "İşletmelere Özel NFC Anahtarlıklar",
     products: [
-      { id: "506", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/000.png", step: 5 }
+      { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png", step: 5 }
     ]
   },
   {
@@ -164,5 +164,6 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
