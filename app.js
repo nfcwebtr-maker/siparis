@@ -3,9 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
   const STEP = 5;
   const MIN_QTY = 20;      
   const FREE_SHIP = 30;    
-  const SHIP_PRICE = 100;
+  const SHIP_PRICE = 100; // Aktualisiert auf 100 TL
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
+  const DEFAULT_PRICE = 40;
 
   const CATEGORIES = [
     {
@@ -63,8 +64,6 @@ document.addEventListener("DOMContentLoaded", function() {
     
     const grid = document.createElement("div");
     grid.className = "grid";
-
-    // Schrittweite bestimmen: Starter Packs = 1, Rest = 5
     const currentStep = cat.name === "Starter Packs ve Standlar" ? 1 : STEP;
 
     cat.products.forEach((p, index) => {
@@ -108,12 +107,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if(qty[p.id] < 0) qty[p.id] = 0; 
         updateItemUI(); 
       };
-      
       grid.appendChild(item);
     });
 
     section.appendChild(grid);
-
     if (cat.products.length > 4) {
       const btn = document.createElement("button");
       btn.className = "show-more-btn";
@@ -124,7 +121,6 @@ document.addEventListener("DOMContentLoaded", function() {
       };
       section.appendChild(btn);
     }
-
     container.appendChild(section);
   });
 
@@ -144,7 +140,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Auto-Save Form
   ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
     if(el) {
@@ -157,14 +152,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const total = Object.values(qty).reduce((a, b) => a + b, 0);
     if (total < MIN_QTY) { alert(`En az ${MIN_QTY} adet seçmelisiniz.`); return; }
 
+    let subtotal = 0;
     let productLines = "";
     CATEGORIES.forEach(cat => {
       cat.products.forEach(p => {
-        if (qty[p.id] > 0) productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
+        if (qty[p.id] > 0) {
+          subtotal += (qty[p.id] * p.price);
+          productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet\n`;
+        }
       });
     });
 
-    const summaryText = `NFC.web.tr Yeni Sipariş!\n\nAlıcı: ${document.getElementById("recipient").value}\nTel: ${document.getElementById("phone").value}\n\nÜrünler:\n${productLines}\nToplam Adet: ${total}`;
+    const shipping = total >= FREE_SHIP ? 0 : SHIP_PRICE;
+    const grandTotal = subtotal + shipping;
+
+    const summaryText = `NFC.web.tr Yeni Sipariş!\n\nAlıcı: ${document.getElementById("recipient").value}\nTel: ${document.getElementById("phone").value}\nAdres: ${document.getElementById("address").value}\n\nÜrünler:\n${productLines}\nToplam Adet: ${total}\nKargo: ${shipping === 0 ? 'Bedava' : shipping + ' ' + CURRENCY}\nGenel Toplam: ${grandTotal} ${CURRENCY}`;
+
     document.getElementById("orderOutput").value = summaryText;
     const waUrl = `https://wa.me/${WHATSAPP}?text=${encodeURIComponent(summaryText)}`;
 
