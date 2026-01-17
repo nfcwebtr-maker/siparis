@@ -1,42 +1,44 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NFC.web.tr Sipariş Platformu</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFC.web.tr Sipariş Platformu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <div id="statusBar" class="status-bar">
-    Sepetiniz: <span id="globalCount">0</span> Adet | <span id="globalPrice">0</span> TL
-  </div>
-
-  <div class="wrap">
-    <div class="header-section">
-        <h1>NFC Ürün Sipariş Formu</h1>
-        <p class="desc">
-          <strong>İstediğiniz ürünleri seçerek sepetinizi oluşturun!</strong><br>
-          Starter paketler 1'er adet, anahtarlıklar +5 adet olarak eklenir.<br><br>
-          🚚 1500 TL ve üzeri siparişlerinizde <strong>kargo ücretsizdir!</strong><br>
-          (1500 TL altı kargo ücreti: 120 TL)
-        </p>
+    <div id="statusBar" class="status-bar">
+        Sepetiniz: <span id="globalCount">0</span> Adet | <span id="globalPrice">0</span> TL
     </div>
 
-    <div class="order-form">
-      <input id="businessName" type="text" placeholder="Firma Adı (Opsiyonel)">
-      <input id="address" type="text" placeholder="Teslimat Adresi">
-      <input id="recipient" type="text" placeholder="Alıcı Adı Soyadı">
-      <input id="phone" type="tel" placeholder="Telefon (05xx...)">
+    <div class="wrap">
+        <div class="header-section">
+            <h1>NFC Ürün Sipariş Formu</h1>
+            <div class="desc">
+                <strong>İstediğiniz ürünleri seçerek sepetinizi oluşturun!</strong><br>
+                Starter paketler 1'er adet, anahtarlıklar +5 adet olarak eklenir.<br><br>
+                🚚 1500 TL ve üzeri siparişlerinizde <strong>kargo ücretsizdir!</strong><br>
+                (1500 TL altı kargo ücreti: 120 TL)
+            </div>
+        </div>
+
+        <div class="order-form">
+            <input id="businessName" type="text" placeholder="Firma Adı (Opsiyonel)">
+            <input id="address" type="text" placeholder="Teslimat Adresi">
+            <input id="recipient" type="text" placeholder="Alıcı Adı Soyadı">
+            <input id="phone" type="tel" placeholder="Telefon (05xx...)">
+        </div>
+
+        <div id="categoriesContainer">
+            </div>
+
+        <button id="createOrderBtn">Siparişi Oluştur</button>
+        <textarea id="orderOutput" readonly placeholder="Sipariş özeti..."></textarea>
+        <div id="summary"></div>
     </div>
 
-    <div id="categoriesContainer"></div>
-
-    <button id="createOrderBtn">Siparişi Oluştur</button>
-    <textarea id="orderOutput" readonly placeholder="Sipariş özeti..."></textarea>
-    <div id="summary"></div>
-  </div>
-
-  <script src="app.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
