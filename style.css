@@ -2,153 +2,61 @@
     --primary: #2563eb;
     --dark: #0f172a;
     --bg: #f8fafc;
-    --border: #e2e8f0;
     --white: #ffffff;
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
 }
 
 body {
     background-color: var(--bg);
     padding-top: 60px;
-    color: var(--dark);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
 }
 
 .status-bar {
     position: fixed;
-    top: 0;
-    width: 100%;
+    top: 0; width: 100%;
     background: var(--dark);
     color: white;
     text-align: center;
     padding: 15px;
     font-weight: bold;
     z-index: 1000;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
-.wrap {
-    max-width: 650px;
-    margin: 20px auto;
-    padding: 15px;
-}
+.wrap { max-width: 600px; margin: 20px auto; padding: 15px; }
 
-.header-section {
-    text-align: center;
-    margin-bottom: 25px;
-}
+.header-section { text-align: center; margin-bottom: 25px; }
 
-.header-section h1 {
-    color: var(--primary);
-    margin-bottom: 15px;
-}
+.desc { background: #eff6ff; padding: 15px; border-radius: 10px; font-size: 14px; }
 
-.desc {
-    background: #eff6ff;
-    border: 1px solid #dbeafe;
-    padding: 15px;
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.6;
-}
+.order-form { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
 
-.order-form {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-    margin-bottom: 25px;
-}
+.order-form input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
 
-.order-form input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-}
+.category-block { background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
 
-/* Kategori Blokları */
-.category-block {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 20px;
-    border: 1px solid var(--border);
-}
+.product-item { display: flex; align-items: center; gap: 15px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
 
-.category-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 15px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid var(--bg);
-}
+/* Görsel Boyutu Sabitlendi */
+.product-img { width: 60px; height: 60px; object-fit: contain; border-radius: 5px; }
 
-/* Ürün Kartı ve Görsel Düzenleme */
-.product-item {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    padding: 10px 0;
-    border-bottom: 1px solid #f1f5f9;
-}
+.product-info { flex: 1; }
 
-.product-img {
-    width: 80px;  /* Görseller sabitlendi */
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    background: #f8fafc;
-}
+.product-controls { display: flex; align-items: center; gap: 10px; }
 
-/* Ürün Sınırlama Mantığı */
-.product-list .product-item:nth-child(n+3) {
-    display: none; /* 2. üründen sonrasını gizle */
-}
+.product-controls button { padding: 5px 10px; cursor: pointer; }
 
-.product-list.expanded .product-item {
-    display: flex !important; /* Hepsini göster */
-}
+/* Ürün Sınırlama */
+.product-list .product-item:nth-child(n+3) { display: none; }
+.product-list.expanded .product-item { display: flex !important; }
 
-.show-more-btn {
-    width: 100%;
-    padding: 10px;
-    margin-top: 10px;
-    background: #f1f5f9;
-    border: none;
-    color: var(--primary);
-    font-weight: 600;
-    cursor: pointer;
-    border-radius: 8px;
-}
+.show-more-btn { width: 100%; padding: 8px; background: #f1f5f9; border: none; color: var(--primary); cursor: pointer; margin-top: 10px; border-radius: 8px; font-weight: bold; }
 
-/* Butonlar */
-#createOrderBtn {
-    width: 100%;
-    padding: 18px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-bottom: 15px;
-}
+#createOrderBtn { width: 100%; padding: 16px; background: #64748b; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
 
-#orderOutput {
-    width: 100%;
-    height: 100px;
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid var(--border);
-    background: #f8fafc;
-    resize: none;
-}
+/* Özet ve WhatsApp Butonu */
+#summary { background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 10px; line-height: 1.6; }
+
+#orderOutput { width: 100%; height: 80px; margin-bottom: 10px; border-radius: 8px; padding: 10px; font-size: 12px; background: #f8fafc; resize: none; border: 1px solid #ddd; }
+
+.whatsapp-btn { width: 100%; padding: 16px; background: #25d366; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
