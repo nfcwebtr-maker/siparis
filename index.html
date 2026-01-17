@@ -18,7 +18,9 @@
             <h1>NFC Ürün Sipariş Formu</h1>
             <div class="desc">
                 <strong>İstediğiniz ürünleri seçerek sepetinizi oluşturun!</strong><br>
-                🚚 1500 TL ve üzeri siparişlerde <strong>kargo ücretsizdir!</strong>
+                📦 Anahtarlıklar <strong>5 ve katları</strong> şeklinde eklenir.<br>
+                🚚 1500 TL ve üzeri siparişlerde <strong>kargo ücretsizdir!</strong><br>
+                (1500 TL altı kargo ücreti: 120 TL)
             </div>
         </div>
 
@@ -31,12 +33,12 @@
 
         <div id="categoriesContainer"></div>
 
-        <button id="createOrderBtn">Siparişi Detaylı Görüntüle</button>
+        <button id="createOrderBtn">Siparişi Görüntüle ve Hesapla</button>
         
-        <div id="summarySection" style="display:none; margin-top: 25px;">
-            <h3 style="margin-bottom:10px; color:#2563eb;">Sipariş Özeti</h3>
+        <div id="summarySection" style="display:none; margin-top: 25px; border-top: 3px solid #2563eb; padding-top: 20px;">
+            <h3 style="margin-bottom:15px; color:#2563eb;">Sipariş Özeti</h3>
             <div id="summary"></div>
-            <textarea id="orderOutput" readonly placeholder="Sipariş metni burada oluşacak..."></textarea>
+            <textarea id="orderOutput" style="display:none;"></textarea>
             <button id="sendWhatsappBtn" class="whatsapp-btn">Siparişi WhatsApp'a Gönder</button>
         </div>
     </div>
