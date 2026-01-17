@@ -9,7 +9,7 @@
 <body>
 
   <div id="statusBar" class="status-bar">
-    Sepetiniz: <span id="globalCount">0</span> Adet (Minimum: 20)
+    Sepetiniz: <span id="globalCount">0</span> Adet | <span id="globalPrice">0</span> TL
   </div>
 
   <div class="wrap">
@@ -17,10 +17,8 @@
 
     <p class="desc">
       <strong>Toplu Sipariş Platformumuza Hoş Geldiniz!</strong><br>
-      İstediğiniz ürünün üzerine tıklayarak sepetinize kolayca adet ekleyebilirsiniz 
-      (Her tıklama +5 adet ekler). <br><br>
-      ✨ <strong>Minimum Sipariş:</strong> Sadece 20 adet.<br>
-      🚚 <strong>Ayrıcalık:</strong> 30 adet ve üzeri siparişlerinizde <strong>kargo ücretsizdir!</strong>
+      Ürünlere tıklayarak sepetinize adet ekleyebilirsiniz (+5 adet). <br><br>
+      ✨ <strong>Min. Sipariş:</strong> 20 adet | 🚚 <strong>Ücretsiz Kargo:</strong> 30 adet ve üzeri
     </p>
 
     <div class="order-form">
@@ -28,14 +26,18 @@
       <input id="address" type="text" placeholder="Teslimat Adresi">
       <input id="recipient" type="text" placeholder="Alıcı Adı Soyadı">
       <input id="phone" type="tel" placeholder="Telefon (05xx...)">
-      <button id="saveFormBtn">Bilgileri Kaydet</button>
+      <p style="font-size: 11px; color: #888; margin: 0; text-align: center;">Bilgileriniz otomatik olarak kaydedilir.</p>
+    </div>
+
+    <div style="text-align: right; margin-bottom: 10px;">
+      <button id="resetCartBtn" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px;">🗑️ Sepeti Temizle</button>
     </div>
 
     <div class="grid" id="grid"></div>
 
     <button id="createOrderBtn">Siparişi Oluştur</button>
 
-    <textarea id="orderOutput" readonly placeholder="Sipariş özeti burada görünecek..."></textarea>
+    <textarea id="orderOutput" readonly placeholder="Sipariş özeti..."></textarea>
     
     <div id="summary"></div>
   </div>
@@ -43,4 +45,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
