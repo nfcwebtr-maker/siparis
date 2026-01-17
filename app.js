@@ -18,12 +18,12 @@ const CATEGORIES = [
       { id: "521", name: "NFC Çocuk Acil Yardım Mavi - Beyaz", price: 40, image: "assets/521.png", step: 5 },
       { id: "522", name: "NFC Çocuk Acil Yardım Pembe - Beyaz", price: 40, image: "assets/522.png", step: 5 },
       { id: "511", name: "NFC 0 Negatif Kan Grubu", price: 40, image: "assets/511.png", step: 5 },
-      { id: "512", name: "NFC A Pozitif Kan Grubu", price: 40, image: "assets/000.png", step: 5 },
-      { id: "513", name: "NFC A Negatif Kan Grubu", price: 40, image: "assets/000.png", step: 5 },
-      { id: "514", name: "NFC B Pozitif Kan Grubu", price: 40, image: "assets/000.png", step: 5 },
-      { id: "515", name: "NFC B Negatif Kan Grubu", price: 40, image: "assets/000.png", step: 5 },
-      { id: "516", name: "NFC AB Pozitif Kan Grubu", price: 40, image: "assets/000.png", step: 5 },
-      { id: "517", name: "NFC AB Negatif Kan Grubu", price: 40, image: "assets/000.png", step: 5 }
+      { id: "512", name: "NFC A Pozitif Kan Grubu", price: 40, image: "assets/512.png", step: 5 },
+      { id: "513", name: "NFC A Negatif Kan Grubu", price: 40, image: "assets/513.png", step: 5 },
+      { id: "514", name: "NFC B Pozitif Kan Grubu", price: 40, image: "assets/514.png", step: 5 },
+      { id: "515", name: "NFC B Negatif Kan Grubu", price: 40, image: "assets/515.png", step: 5 },
+      { id: "516", name: "NFC AB Pozitif Kan Grubu", price: 40, image: "assets/516.png", step: 5 },
+      { id: "517", name: "NFC AB Negatif Kan Grubu", price: 40, image: "assets/517.png", step: 5 }
     ]
   },
   {
@@ -165,6 +165,7 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
 
