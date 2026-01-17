@@ -39,12 +39,6 @@ const CATEGORIES = [
     products: [
       { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png", step: 5 }
     ]
-  },
-  {
-    name: "Veteriner ve PetShop Anahtarlıkları",
-    products: [
-      { id: "531", name: "Pet Takip NFC", price: 40, image: "assets/505.png", step: 5 }
-    ]
   }
 ];
 
@@ -59,24 +53,26 @@ function renderUI() {
         block.className = 'category-block';
         let html = `<div class="category-title">${cat.name}</div>`;
         html += `<div class="product-list">`;
+        
         cat.products.forEach(prod => {
+            const hasQty = cart[prod.id]?.qty > 0;
             html += `
-                <div class="product-item">
+                <div class="product-item ${hasQty ? 'selected' : ''}" id="product-${prod.id}">
                     <img src="${prod.image}" class="product-img" alt="${prod.name}">
-                    <div class="product-info">
-                        <div class="product-name">${prod.name}</div>
-                        <div class="product-price">${prod.price} TL ${prod.step > 1 ? '(5\'li Paket)' : ''}</div>
-                    </div>
+                    <div class="product-id">ID: ${prod.id}</div>
+                    <div class="product-name">${prod.name}</div>
+                    <div class="product-price">${prod.price} TL / Adet</div>
                     <div class="product-controls">
                         <button onclick="updateCart('${prod.id}', -1, '${prod.name}', ${prod.price}, ${prod.step})">-</button>
-                        <span id="qty-${prod.id}">${cart[prod.id]?.qty || 0}</span>
+                        <span class="product-qty" id="qty-${prod.id}">${cart[prod.id]?.qty || 0}</span>
                         <button onclick="updateCart('${prod.id}', 1, '${prod.name}', ${prod.price}, ${prod.step})">+</button>
                     </div>
                 </div>`;
         });
+        
         html += `</div>`;
         if(cat.products.length > 2) {
-            html += `<button class="show-more-btn" onclick="toggleList(this)">Daha Fazla Gör...</button>`;
+            html += `<button class="show-more-btn" onclick="toggleList(this)">Tümünü Göster</button>`;
         }
         block.innerHTML = html;
         container.appendChild(block);
@@ -85,11 +81,24 @@ function renderUI() {
 
 window.updateCart = function(id, direction, name, price, step) {
     if (!cart[id]) cart[id] = { qty: 0, name: name, price: price };
+    
     let change = direction * step;
     cart[id].qty += change;
     if (cart[id].qty < 0) cart[id].qty = 0;
+
+    // Görsel Güncelleme
     const label = document.getElementById(`qty-${id}`);
+    const card = document.getElementById(`product-${id}`);
+    
     if (label) label.innerText = cart[id].qty;
+    
+    // Ürün seçildiyse vurgula
+    if (cart[id].qty > 0) {
+        card.classList.add('selected');
+    } else {
+        card.classList.remove('selected');
+    }
+
     calculateTotals();
 };
 
@@ -106,7 +115,7 @@ function calculateTotals() {
 window.toggleList = function(btn) {
     const list = btn.previousElementSibling;
     list.classList.toggle('expanded');
-    btn.innerText = list.classList.contains('expanded') ? 'Daha Az Göster' : 'Daha Fazla Gör...';
+    btn.innerText = list.classList.contains('expanded') ? 'Daha Az Göster' : 'Tümünü Göster';
 };
 
 document.getElementById('createOrderBtn').addEventListener('click', () => {
@@ -119,52 +128,41 @@ document.getElementById('createOrderBtn').addEventListener('click', () => {
         if (cart[id].qty > 0) {
             let lineTotal = cart[id].qty * cart[id].price;
             tPrice += lineTotal;
-            itemsHtml += `• ${cart[id].name} - ${cart[id].qty} Adet (${lineTotal} TL)<br>`;
-            whatsappMsg += `• ${cart[id].name} (${cart[id].qty} Adet)%0A`;
+            itemsHtml += `• [ID:${id}] ${cart[id].name} - ${cart[id].qty} Adet<br>`;
+            whatsappMsg += `• [ID:${id}] ${cart[id].name} (${cart[id].qty} Adet)%0A`;
             hasItems = true;
         }
     }
 
     if (!hasItems) return alert("Lütfen sepetinize ürün ekleyin!");
 
-    // KARGO HESAPLAMA MANTIĞI
     const shipping = tPrice >= FREE_SHIP_THRESHOLD ? 0 : SHIP_PRICE;
     const finalTotal = tPrice + shipping;
 
     const biz = document.getElementById('businessName').value || "-";
-    const adr = document.getElementById('address').value || "Eksik";
-    const rec = document.getElementById('recipient').value || "Eksik";
-    const phn = document.getElementById('phone').value || "Eksik";
+    const adr = document.getElementById('address').value || "Belirtilmedi";
+    const rec = document.getElementById('recipient').value || "Belirtilmedi";
+    const phn = document.getElementById('phone').value || "-";
 
-    // EKRAN ÖZETİ
     document.getElementById('summary').innerHTML = `
         ${itemsHtml}
         <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
-        <strong>Ürün Toplamı:</strong> ${tPrice} TL<br>
-        <strong>Kargo Ücreti:</strong> ${shipping === 0 ? "<span style='color:green'>Ücretsiz</span>" : shipping + " TL"}<br>
-        <span style="font-size:1.1rem"><strong>Genel Toplam: ${finalTotal} TL</strong></span><br><br>
-        <strong>Teslimat Bilgileri:</strong><br>
-        ${rec} / ${phn}<br>
-        ${biz}<br>
-        ${adr}
+        Ürün Toplamı: ${tPrice} TL<br>
+        Kargo Ücreti: ${shipping === 0 ? "Bedava" : shipping + " TL"}<br>
+        <strong>Genel Toplam: ${finalTotal} TL</strong><br><br>
+        <strong>Müşteri:</strong> ${rec} (${phn})<br>
+        <strong>Firma:</strong> ${biz}<br>
+        <strong>Adres:</strong> ${adr}
     `;
 
-    // WHATSAPP METNİ
-    whatsappMsg += `%0A*Ürün Toplamı:* ${tPrice} TL`;
-    whatsappMsg += `%0A*Kargo:* ${shipping === 0 ? "Ücretsiz" : shipping + " TL"}`;
-    whatsappMsg += `%0A*GENEL TOPLAM:* ${finalTotal} TL`;
-    whatsappMsg += `%0A%0A*Müşteri:* ${rec}%0A*Firma:* ${biz}%0A*Adres:* ${adr}%0A*Tel:* ${phn}`;
-    
+    whatsappMsg += `%0A*Toplam:* ${finalTotal} TL %0A%0A*Müşteri:* ${rec}%0A*Firma:* ${biz}%0A*Adres:* ${adr}%0A*Tel:* ${phn}`;
     document.getElementById('orderOutput').value = whatsappMsg;
     document.getElementById('summarySection').style.display = 'block';
-    
-    // Sayfayı özet kısmına kaydır
-    document.getElementById('summarySection').scrollIntoView({ behavior: 'smooth' });
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
 });
 
 document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
-    const msg = document.getElementById('orderOutput').value;
-    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
+    window.location.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${document.getElementById('orderOutput').value}`;
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
