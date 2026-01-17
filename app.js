@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
       ]
     },
     {
-      name: "İşletmeler Özel Anahtarlıklar",
+      name: "İşletmelere Özel NFC Anahtarlıklar",
       products: [
         { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png" }
       ]
@@ -197,3 +197,4 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("orderOutput").scrollIntoView({ behavior: "smooth", block: "center" });
   };
 });
+
