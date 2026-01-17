@@ -96,12 +96,7 @@ body {
     gap: 15px;
 }
 
-/* Desktop: 4 Spalten */
-@media (min-width: 1024px) {
-    .product-list {
-        grid-template-columns: repeat(4, 1fr);
-    }
-}
+
 
 .product-item {
     background: white;
@@ -218,3 +213,4 @@ body {
     cursor: pointer;
     margin-top: 15px;
 }
+
