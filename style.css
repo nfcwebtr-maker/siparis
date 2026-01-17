@@ -1,151 +1,137 @@
-/* Ana Değişkenler - Renk ve Font Ayarları */
+/* --- Genel Ayarlar --- */
 :root {
-    --primary-color: #2563eb; /* Kurumsal Mavi */
-    --secondary-color: #0f172a; /* Koyu Lacivert */
+    --primary-color: #2563eb;    /* NFC Kurumsal Mavi */
     --accent-color: #00d2ff;
-    --bg-light: #f8fafc;
-    --text-main: #1e293b;
-    --text-muted: #64748b;
+    --bg-color: #f3f4f6;
+    --text-dark: #1f2937;
     --white: #ffffff;
-    --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --border-radius: 12px;
 }
 
-/* Genel Sıfırlama */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-}
-
 body {
-    background-color: var(--bg-light);
-    color: var(--text-main);
-    line-height: 1.6;
+    background-color: var(--bg-color);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-dark);
+    margin: 0;
+    padding-top: 60px; /* Status bar için boşluk */
 }
 
-/* Konteynır Yapısı */
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 2rem;
-}
-
-/* Başlık Bölümü */
-.header {
+/* --- Üst Durum Çubuğu (Status Bar) --- */
+.status-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: var(--text-dark);
+    color: var(--white);
     text-align: center;
-    margin-bottom: 3rem;
+    padding: 12px;
+    font-weight: 600;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    font-size: 14px;
 }
 
-.header h1 {
-    font-size: 2.5rem;
-    color: var(--secondary-color);
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    margin-bottom: 0.5rem;
-}
-
-.header p {
-    color: var(--text-muted);
+#globalPrice {
+    color: var(--accent-color);
     font-size: 1.1rem;
 }
 
-/* Ürün Kartı Stili */
-.product-card {
-    background: var(--white);
+/* --- Ana Konteynır --- */
+.wrap {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.header-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header-section h1 {
+    font-size: 24px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.desc {
+    background: #e5e7eb;
+    padding: 15px;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    padding: 1.5rem;
-    transition: transform 0.3s ease;
-    border: 1px solid rgba(226, 232, 240, 0.8);
+    font-size: 14px;
+    line-height: 1.5;
 }
 
-.product-card:hover {
-    transform: translateY(-5px);
-}
-
-/* Form Elemanları Stili */
+/* --- Form Alanları --- */
 .order-form {
     background: var(--white);
-    padding: 2rem;
+    padding: 20px;
     border-radius: var(--border-radius);
-    box-shadow: var(--shadow);
-    max-width: 600px;
-    margin: 0 auto;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--secondary-color);
-}
-
-input, select, textarea {
+.order-form input {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #cbd5e1;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
     border-radius: 8px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+    font-size: 15px;
+    box-sizing: border-box; /* Padding taşmasını önler */
 }
 
-input:focus {
+.order-form input:focus {
     outline: none;
     border-color: var(--primary-color);
     ring: 2px solid rgba(37, 99, 235, 0.2);
 }
 
-/* Buton Stili */
-.btn {
-    display: inline-block;
+/* --- Dinamik İçerik Alanı (Kategoriler) --- */
+#categoriesContainer {
+    margin-bottom: 25px;
+}
+
+/* --- Buton ve Çıktı Alanı --- */
+#createOrderBtn {
     width: 100%;
-    padding: 1rem;
+    padding: 16px;
     background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-    color: var(--white);
-    text-align: center;
-    font-weight: 700;
-    text-decoration: none;
-    border-radius: 8px;
+    color: white;
     border: none;
+    border-radius: var(--border-radius);
+    font-size: 18px;
+    font-weight: bold;
     cursor: pointer;
     transition: opacity 0.3s;
 }
 
-.btn:hover {
+#createOrderBtn:hover {
     opacity: 0.9;
 }
 
-/* WhatsApp Hızlı İletişim Butonu (Sabit) */
-.whatsapp-float {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background-color: #25d366;
-    color: white;
-    padding: 1rem;
-    border-radius: 50px;
-    box-shadow: var(--shadow);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    font-weight: 600;
-    z-index: 1000;
+#orderOutput {
+    width: 100%;
+    height: 120px;
+    margin-top: 20px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px dashed #94a3b8;
+    background: #f8fafc;
+    font-family: monospace;
+    font-size: 13px;
+    resize: none;
+    box-sizing: border-box;
 }
 
-/* Mobil Uyumluluk */
-@media (max-width: 768px) {
-    .header h1 {
-        font-size: 1.8rem;
+/* --- Mobil Uyumluluk --- */
+@media (max-width: 480px) {
+    .wrap {
+        padding: 10px;
+        margin: 20px auto;
     }
-    .container {
-        padding: 1rem;
+    .header-section h1 {
+        font-size: 20px;
     }
 }
