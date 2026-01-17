@@ -30,9 +30,9 @@ const CATEGORIES = [
     name: "Sosyal Medya Takip Anahtarlıkları",
     products: [
       { id: "501", name: "NFC Instagram Takip Pembe", price: 40, image: "assets/501.png", step: 5 },
-      { id: "502", name: "NFC Instagram Mavi", price: 40, image: "assets/000.png", step: 5 },
-      { id: "503", name: "NFC TikTok Takip", price: 40, image: "assets/000.png", step: 5 },
-      { id: "504", name: "NFC Google Yorum", price: 40, image: "assets/000.png", step: 5 }
+      { id: "502", name: "NFC WhatsApp Yeşil", price: 40, image: "assets/502.png", step: 5 },
+      { id: "503", name: "NFC TikTok Takip", price: 40, image: "assets/503.png", step: 5 },
+      { id: "504", name: "NFC Facebook Takip", price: 40, image: "assets/504.png", step: 5 }
     ]
   },
   {
@@ -165,6 +165,7 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
 
