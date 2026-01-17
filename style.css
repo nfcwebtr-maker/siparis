@@ -18,17 +18,13 @@ body { font-family: 'Segoe UI', sans-serif; background: #f9fafb; margin: 0; padd
 .status-bar.success { background: var(--main-green); }
 
 .wrap { max-width: var(--maxw); margin: 0 auto; padding: 20px; }
-
 .header-section { text-align: center; margin-bottom: 40px; }
 h1 { color: #111; margin-bottom: 10px; }
 .desc { color: #4b5563; line-height: 1.6; max-width: 700px; margin: 0 auto; }
 
 .category-title {
-  margin: 40px 0 20px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #e5e7eb;
-  font-size: 22px;
-  color: #111827;
+  margin: 40px 0 20px; padding-bottom: 10px;
+  border-bottom: 2px solid #e5e7eb; font-size: 22px; color: #111827;
 }
 
 .order-form {
