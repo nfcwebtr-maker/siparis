@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const CATEGORIES = [
     {
-      name: "Starter Packs ve Standlar",
+      name: "Başlangıç Setleri ve Standlar", // İsim güncellendi
       products: [
         { id: "599", name: "SOS ve Sosyal Medya Başlangıç Seti", price: 1600, image: "assets/599.png" },
         { id: "598", name: "Anahtarlık Teşhir Standı -Boş-", price: 200, image: "assets/598.png" }
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function() {
       ]
     },
     {
-      name: "Veteriner ve PetShop Anahtarlıklar",
+      name: "Veteriner ve PetShop Anahtarlıkları", // İsim güncellendi
       products: [
         { id: "531", name: "Pet Takip NFC", price: 40, image: "assets/531.png" }
       ]
@@ -53,22 +53,20 @@ document.addEventListener("DOMContentLoaded", function() {
 
   const container = document.getElementById("categoriesContainer");
   const qty = {};
-
-  // Ekran boyutuna göre başlangıç limiti: Mobilde 2, Masaüstünde 4
   const initialVisibleLimit = window.innerWidth <= 500 ? 2 : 4;
 
+  // ÜRÜNLERİ OLUŞTURMA DÖNGÜSÜ
   CATEGORIES.forEach(cat => {
     const section = document.createElement("div");
     section.className = "category-section";
     section.innerHTML = `<h2 class="category-title">${cat.name}</h2>`;
     const grid = document.createElement("div");
     grid.className = "grid";
-    const currentStep = cat.name === "Starter Packs ve Standlar" ? 1 : STEP;
+    const currentStep = cat.name === "Başlangıç Setleri ve Standlar" ? 1 : STEP;
 
     cat.products.forEach((p, index) => {
       qty[p.id] = 0;
       const item = document.createElement("div");
-      // Başlangıç limitine göre 'hidden' sınıfını ekle
       item.className = `item ${index >= initialVisibleLimit ? 'hidden' : ''}`;
       
       item.innerHTML = `
@@ -115,8 +113,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     section.appendChild(grid);
-
-    // Eğer ürün sayısı limitten fazlaysa "Daha Fazla Göster" butonu ekle
     if (cat.products.length > initialVisibleLimit) {
       const btn = document.createElement("button");
       btn.className = "show-more-btn";
@@ -127,19 +123,15 @@ document.addEventListener("DOMContentLoaded", function() {
       };
       section.appendChild(btn);
     }
-
     container.appendChild(section);
   });
 
+  // STATUS BAR GÜNCELLEME (İSTEDİĞİNİZ FORMAT)
   function updateGlobalStatus() {
-    let totalQty = 0;
     let totalPrice = 0;
     CATEGORIES.forEach(cat => {
       cat.products.forEach(p => {
-        if (qty[p.id] > 0) {
-          totalQty += qty[p.id];
-          totalPrice += (qty[p.id] * p.price);
-        }
+        if (qty[p.id] > 0) totalPrice += (qty[p.id] * p.price);
       });
     });
 
@@ -148,14 +140,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (totalPrice >= FREE_SHIP_THRESHOLD) {
       bar.classList.add("success");
-      bar.innerHTML = `🚀 ${totalQty} Ürün | ${totalPrice} TL (Bedava Kargo!)`;
+      bar.innerHTML = `🚀 Sepet: ${totalPrice} TL | Kargo Ücretsiz!`;
     } else {
       bar.classList.remove("success");
       const diff = FREE_SHIP_THRESHOLD - totalPrice;
-      bar.innerHTML = `Sepet: ${totalPrice} TL | Kargo bedava için ${diff} TL daha`;
+      bar.innerHTML = `Sepet: ${totalPrice} TL | Ücretsiz Kargo için ${diff} TL daha`;
     }
   }
 
+  // FORM KAYIT
   ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
     if(el) {
@@ -164,6 +157,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
+  // SİPARİŞ OLUŞTURMA
   document.getElementById("createOrderBtn").onclick = () => {
     let totalQty = 0;
     let subtotal = 0;
@@ -189,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function() {
       `Ürünler:\n${productLines}\n` +
       `------------------------\n` +
       `Ara Toplam: ${subtotal} TL\n` +
-      `Kargo: ${shipping === 0 ? 'Bedava' : shipping + ' TL'}\n` +
+      `Kargo: ${shipping === 0 ? 'Ücretsiz' : shipping + ' TL'}\n` +
       `Genel Toplam: ${subtotal + shipping} TL`;
 
     document.getElementById("orderOutput").value = summaryText;
