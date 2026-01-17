@@ -7,17 +7,17 @@ const CATEGORIES = [
   {
     name: "Başlangıç Setleri ve Standlar",
     products: [
-      { id: "599", name: "SOS ve Sosyal Medya Başlangıç Seti", price: 1600, image: "assets/505.png", step: 1 },
+      { id: "599", name: "Acil Durum ve Sosyal Medya Başlangıç Seti", price: 1600, image: "assets/505.png", step: 1 },
       { id: "598", name: "Anahtarlık Teşhir Standı -Boş-", price: 200, image: "assets/598.png", step: 1 }
     ]
   },
   {
     name: "SOS ve Acil Durum Anahtarlıkları",
     products: [
-      { id: "510", name: "NFC 0 Pozitif Kan Grubu", price: 40, image: "assets/505.png", step: 5 },
-      { id: "521", name: "SOS Acil Yardım", price: 40, image: "assets/505.png", step: 5 },
-      { id: "522", name: "Medikal Bilgi Anahtarlık", price: 40, image: "assets/505.png", step: 5 },
-      { id: "511", name: "NFC 0 Negatif Kan Grubu", price: 40, image: "assets/505.png", step: 5 },
+      { id: "510", name: "NFC 0 Pozitif Kan Grubu", price: 40, image: "assets/510.png", step: 5 },
+      { id: "521", name: "NFC Çocuk Acil Yardım Mavi - Beyaz", price: 40, image: "assets/521.png", step: 5 },
+      { id: "522", name: "NFC Çocuk Acil Yardım Pembe - Beyaz", price: 40, image: "assets/522.png", step: 5 },
+      { id: "511", name: "NFC 0 Negatif Kan Grubu", price: 40, image: "assets/511.png", step: 5 },
       { id: "512", name: "NFC A Pozitif Kan Grubu", price: 40, image: "assets/505.png", step: 5 },
       { id: "513", name: "NFC A Negatif Kan Grubu", price: 40, image: "assets/505.png", step: 5 },
       { id: "514", name: "NFC B Pozitif Kan Grubu", price: 40, image: "assets/505.png", step: 5 },
@@ -29,7 +29,7 @@ const CATEGORIES = [
   {
     name: "Sosyal Medya Takip Anahtarlıkları",
     products: [
-      { id: "501", name: "NFC Instagram Pembe", price: 40, image: "assets/505.png", step: 5 },
+      { id: "501", name: "NFC Instagram Takip Pembe", price: 40, image: "assets/501.png", step: 5 },
       { id: "502", name: "NFC Instagram Mavi", price: 40, image: "assets/505.png", step: 5 },
       { id: "503", name: "NFC TikTok Takip", price: 40, image: "assets/505.png", step: 5 },
       { id: "504", name: "NFC Google Yorum", price: 40, image: "assets/505.png", step: 5 }
@@ -164,3 +164,4 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
