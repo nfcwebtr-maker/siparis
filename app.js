@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       name: "İşletmeler Özel Anahtarlıklar",
       products: [
-        { id: "505", name: "Logo Baskılı Özel", price: 50, image: "assets/505.png" }
+        { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png" }
       ]
     },
     {
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
         <img src="${p.image}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300x169?text=Resim+Yok'">
         <div class="item-badge" style="display:none;">0 Adet</div>
         <div class="item-info">
-            <span class="item-title">${p.name}</span>
+            <span class="item-title">${p.id} - ${p.name}</span>
             <span class="item-price">${p.price} TL <small style="font-size:10px; color:#6b7280; font-weight:400;">/ Adet</small></span>
         </div>
         <div class="controls">
@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
     } else {
       bar.classList.remove("success");
       const diff = FREE_SHIP_THRESHOLD - totalPrice;
-      bar.innerHTML = `Sepet: ${totalPrice} TL | Kargo bedava için ${diff} TL daha ekleyin`;
+      bar.innerHTML = `Sepet: ${totalPrice} TL | Kargo bedava için ${diff} TL daha`;
     }
   }
 
@@ -166,7 +166,7 @@ document.addEventListener("DOMContentLoaded", function() {
           const lineTotal = qty[p.id] * p.price;
           totalQty += qty[p.id];
           subtotal += lineTotal;
-          productLines += `• ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
+          productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
         }
       });
     });
