@@ -3,60 +3,51 @@
     --dark: #0f172a;
     --bg: #f8fafc;
     --white: #ffffff;
+    --border: #e2e8f0;
 }
 
-body {
-    background-color: var(--bg);
-    padding-top: 60px;
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-}
+body { background-color: var(--bg); padding-top: 70px; font-family: 'Inter', sans-serif; margin: 0; }
 
-.status-bar {
-    position: fixed;
-    top: 0; width: 100%;
-    background: var(--dark);
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-weight: bold;
-    z-index: 1000;
-}
+.status-bar { position: fixed; top: 0; width: 100%; background: var(--dark); color: white; text-align: center; padding: 15px; font-weight: bold; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 
-.wrap { max-width: 600px; margin: 20px auto; padding: 15px; }
+.wrap { max-width: 600px; margin: 0 auto; padding: 15px; }
 
 .header-section { text-align: center; margin-bottom: 25px; }
 
-.desc { background: #eff6ff; padding: 15px; border-radius: 10px; font-size: 14px; }
+.desc { background: #eff6ff; padding: 15px; border-radius: 12px; font-size: 14px; line-height: 1.6; border: 1px solid #dbeafe; }
 
-.order-form { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+.order-form { background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
 
-.order-form input { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+.order-form input { width: 100%; padding: 14px; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; box-sizing: border-box; }
 
-.category-block { background: white; border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+.category-block { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--border); }
 
-.product-item { display: flex; align-items: center; gap: 15px; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+.category-title { font-weight: 800; font-size: 18px; margin-bottom: 15px; color: var(--dark); border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
 
-/* Görsel Boyutu Sabitlendi */
-.product-img { width: 60px; height: 60px; object-fit: contain; border-radius: 5px; }
+.product-item { display: flex; align-items: center; gap: 15px; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+
+.product-img { width: 65px; height: 65px; object-fit: contain; border-radius: 8px; background: #f9fafb; }
 
 .product-info { flex: 1; }
 
-.product-controls { display: flex; align-items: center; gap: 10px; }
+.product-name { font-weight: 600; font-size: 14px; margin-bottom: 4px; }
 
-.product-controls button { padding: 5px 10px; cursor: pointer; }
+.product-price { color: var(--primary); font-weight: 700; font-size: 13px; }
 
-/* Ürün Sınırlama */
+.product-controls { display: flex; align-items: center; gap: 12px; }
+
+.product-controls button { width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--primary); background: white; color: var(--primary); font-weight: bold; cursor: pointer; transition: 0.2s; }
+
+.product-controls button:hover { background: var(--primary); color: white; }
+
+/* Kategori Sınırlama CSS */
 .product-list .product-item:nth-child(n+3) { display: none; }
 .product-list.expanded .product-item { display: flex !important; }
 
-.show-more-btn { width: 100%; padding: 8px; background: #f1f5f9; border: none; color: var(--primary); cursor: pointer; margin-top: 10px; border-radius: 8px; font-weight: bold; }
+.show-more-btn { width: 100%; padding: 12px; background: #f1f5f9; border: none; color: var(--primary); cursor: pointer; margin-top: 10px; border-radius: 8px; font-weight: 700; }
 
-#createOrderBtn { width: 100%; padding: 16px; background: #64748b; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
+#createOrderBtn { width: 100%; padding: 20px; background: var(--dark); color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 10px; }
 
-/* Özet ve WhatsApp Butonu */
-#summary { background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; margin-bottom: 10px; line-height: 1.6; }
+#summary { background: #fff; padding: 20px; border: 1px solid var(--border); border-radius: 12px; font-size: 14px; line-height: 1.8; color: #334155; }
 
-#orderOutput { width: 100%; height: 80px; margin-bottom: 10px; border-radius: 8px; padding: 10px; font-size: 12px; background: #f8fafc; resize: none; border: 1px solid #ddd; }
-
-.whatsapp-btn { width: 100%; padding: 16px; background: #25d366; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; }
+.whatsapp-btn { width: 100%; padding: 20px; background: #25d366; color: white; border: none; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 16px; margin-top: 15px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3); }
