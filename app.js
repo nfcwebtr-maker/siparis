@@ -2,6 +2,7 @@ const WHATSAPP_NUMBER = "908503463240";
 const FREE_SHIP_THRESHOLD = 1500;
 const SHIP_PRICE = 120;
 
+// TÜM KATEGORİLER VE ÜRÜNLER (Eksiksiz Liste)
 const CATEGORIES = [
   {
     name: "Başlangıç Setleri ve Standlar",
@@ -39,6 +40,12 @@ const CATEGORIES = [
     products: [
       { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png", step: 5 }
     ]
+  },
+  {
+    name: "Veteriner ve PetShop Anahtarlıkları",
+    products: [
+      { id: "531", name: "Pet Takip NFC", price: 40, image: "assets/505.png", step: 5 }
+    ]
   }
 ];
 
@@ -55,16 +62,15 @@ function renderUI() {
         html += `<div class="product-list">`;
         
         cat.products.forEach(prod => {
-            const hasQty = cart[prod.id]?.qty > 0;
             html += `
-                <div class="product-item ${hasQty ? 'selected' : ''}" id="product-${prod.id}">
-                    <img src="${prod.image}" class="product-img" alt="${prod.name}">
+                <div class="product-item" id="product-${prod.id}">
+                    <img src="${prod.image}" class="product-img">
                     <div class="product-id">ID: ${prod.id}</div>
                     <div class="product-name">${prod.name}</div>
                     <div class="product-price">${prod.price} TL / Adet</div>
                     <div class="product-controls">
                         <button onclick="updateCart('${prod.id}', -1, '${prod.name}', ${prod.price}, ${prod.step})">-</button>
-                        <span class="product-qty" id="qty-${prod.id}">${cart[prod.id]?.qty || 0}</span>
+                        <span class="product-qty" id="qty-${prod.id}">0</span>
                         <button onclick="updateCart('${prod.id}', 1, '${prod.name}', ${prod.price}, ${prod.step})">+</button>
                     </div>
                 </div>`;
@@ -72,7 +78,7 @@ function renderUI() {
         
         html += `</div>`;
         if(cat.products.length > 2) {
-            html += `<button class="show-more-btn" onclick="toggleList(this)">Tümünü Göster</button>`;
+            html += `<button class="show-more-btn" onclick="toggleList(this)">Tümünü Göster (${cat.products.length})</button>`;
         }
         block.innerHTML = html;
         container.appendChild(block);
@@ -81,23 +87,15 @@ function renderUI() {
 
 window.updateCart = function(id, direction, name, price, step) {
     if (!cart[id]) cart[id] = { qty: 0, name: name, price: price };
-    
     let change = direction * step;
     cart[id].qty += change;
     if (cart[id].qty < 0) cart[id].qty = 0;
 
-    // Görsel Güncelleme
-    const label = document.getElementById(`qty-${id}`);
+    document.getElementById(`qty-${id}`).innerText = cart[id].qty;
     const card = document.getElementById(`product-${id}`);
     
-    if (label) label.innerText = cart[id].qty;
-    
-    // Ürün seçildiyse vurgula
-    if (cart[id].qty > 0) {
-        card.classList.add('selected');
-    } else {
-        card.classList.remove('selected');
-    }
+    if (cart[id].qty > 0) card.classList.add('selected');
+    else card.classList.remove('selected');
 
     calculateTotals();
 };
@@ -110,6 +108,17 @@ function calculateTotals() {
     }
     document.getElementById('globalCount').innerText = tQty;
     document.getElementById('globalPrice').innerText = tPrice;
+
+    // Ücretsiz Kargo Bilgisi Güncelleme
+    const alertBox = document.getElementById('shippingAlert');
+    if (tPrice === 0) {
+        alertBox.innerText = "1500 TL üzeri kargo BEDAVA!";
+    } else if (tPrice < FREE_SHIP_THRESHOLD) {
+        let remaining = FREE_SHIP_THRESHOLD - tPrice;
+        alertBox.innerHTML = `Ücretsiz kargo için <strong style="color:white">${remaining} TL</strong> daha ürün ekleyin!`;
+    } else {
+        alertBox.innerHTML = `<strong style="color:#22c55e">Kargonuz Ücretsiz!</strong>`;
+    }
 }
 
 window.toggleList = function(btn) {
@@ -119,9 +128,7 @@ window.toggleList = function(btn) {
 };
 
 document.getElementById('createOrderBtn').addEventListener('click', () => {
-    let tPrice = 0;
-    let itemsHtml = "<strong>Sipariş Listesi:</strong><br>";
-    let whatsappMsg = "*YENİ NFC SİPARİŞİ*%0A%0A";
+    let tPrice = 0, itemsHtml = "<strong>Sipariş Listesi:</strong><br>", whatsappMsg = "*YENİ SİPARİŞ*%0A%0A";
     let hasItems = false;
 
     for (let id in cart) {
@@ -133,29 +140,20 @@ document.getElementById('createOrderBtn').addEventListener('click', () => {
             hasItems = true;
         }
     }
-
-    if (!hasItems) return alert("Lütfen sepetinize ürün ekleyin!");
+    if (!hasItems) return alert("Sepetiniz boş!");
 
     const shipping = tPrice >= FREE_SHIP_THRESHOLD ? 0 : SHIP_PRICE;
     const finalTotal = tPrice + shipping;
-
-    const biz = document.getElementById('businessName').value || "-";
-    const adr = document.getElementById('address').value || "Belirtilmedi";
-    const rec = document.getElementById('recipient').value || "Belirtilmedi";
-    const phn = document.getElementById('phone').value || "-";
 
     document.getElementById('summary').innerHTML = `
         ${itemsHtml}
         <hr style="border:0; border-top:1px solid #eee; margin:10px 0;">
         Ürün Toplamı: ${tPrice} TL<br>
-        Kargo Ücreti: ${shipping === 0 ? "Bedava" : shipping + " TL"}<br>
-        <strong>Genel Toplam: ${finalTotal} TL</strong><br><br>
-        <strong>Müşteri:</strong> ${rec} (${phn})<br>
-        <strong>Firma:</strong> ${biz}<br>
-        <strong>Adres:</strong> ${adr}
+        Kargo: ${shipping === 0 ? "Bedava" : shipping + " TL"}<br>
+        <strong>Toplam: ${finalTotal} TL</strong>
     `;
-
-    whatsappMsg += `%0A*Toplam:* ${finalTotal} TL %0A%0A*Müşteri:* ${rec}%0A*Firma:* ${biz}%0A*Adres:* ${adr}%0A*Tel:* ${phn}`;
+    
+    whatsappMsg += `%0A*Kargo:* ${shipping === 0 ? "Bedava" : shipping + " TL"}%0A*Toplam:* ${finalTotal} TL%0A%0A*Müşteri:* ${document.getElementById('recipient').value}%0A*Adres:* ${document.getElementById('address').value}`;
     document.getElementById('orderOutput').value = whatsappMsg;
     document.getElementById('summarySection').style.display = 'block';
     window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
