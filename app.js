@@ -1,12 +1,11 @@
 document.addEventListener("DOMContentLoaded", function() {
 
   // ==========================================
-  // 1. KONFIGURATION & WERTE
+  // 1. KONFIGURASYON & DEĞERLER
   // ==========================================
   const STEP = 5;
-  const MIN_QTY = 20;      
-  const FREE_SHIP = 30;    
-  const SHIP_PRICE = 100;
+  const FREE_SHIP_THRESHOLD = 1500; // 1500 TL ve üzeri kargo bedava
+  const SHIP_PRICE = 120;           // Altında ise 120 TL kargo
   const CURRENCY = "TL";
   const WHATSAPP = "908503463240";
 
@@ -14,8 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
     {
       name: "Starter Packs ve Standlar",
       products: [
-        { id: "599", name: "NFC Starter Pack", price: 599, image: "https://via.placeholder.com/300x200?text=Starter+Pack" },
-        { id: "598", name: "NFC Masa Standı", price: 499, image: "https://via.placeholder.com/300x200?text=Masa+Standi" }
+        { id: "599", name: "NFC Starter Pack", price: 1600, image: "https://via.placeholder.com/300x200?text=Starter+Pack" },
+        { id: "598", name: "NFC Masa Standı", price: 200, image: "https://via.placeholder.com/300x200?text=Masa+Standi" }
       ]
     },
     {
@@ -59,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
   const container = document.getElementById("categoriesContainer");
   const qty = {};
 
-  // ÜRÜNLERİ OLUŞTUR
+  // PRODUKTE RENDERN
   CATEGORIES.forEach(cat => {
     const section = document.createElement("div");
     section.className = "category-section";
@@ -103,7 +102,12 @@ document.addEventListener("DOMContentLoaded", function() {
       };
 
       item.onclick = () => { qty[p.id] += currentStep; updateItemUI(); };
-      removeBtn.onclick = (e) => { e.stopPropagation(); qty[p.id] -= currentStep; if(qty[p.id]<0) qty[p.id]=0; updateItemUI(); };
+      removeBtn.onclick = (e) => { 
+        e.stopPropagation(); 
+        qty[p.id] -= currentStep; 
+        if(qty[p.id] < 0) qty[p.id] = 0; 
+        updateItemUI(); 
+      };
       grid.appendChild(item);
     });
 
@@ -121,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
     container.appendChild(section);
   });
 
-  // STATUS BARI GÜNCELLE
+  // STATUS BERECHNUNG
   function updateGlobalStatus() {
     let totalQty = 0;
     let totalPrice = 0;
@@ -138,17 +142,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const bar = document.getElementById("statusBar");
     if(!bar) return;
 
-    if (totalQty >= MIN_QTY) {
+    if (totalPrice >= FREE_SHIP_THRESHOLD) {
       bar.classList.add("success");
-      const shipping = totalQty >= FREE_SHIP ? 0 : SHIP_PRICE;
-      bar.innerHTML = totalQty >= FREE_SHIP ? `🚀 ${totalQty} Adet | ${totalPrice} TL (Bedava Kargo!)` : `✅ ${totalQty} Adet | ${totalPrice} TL (+${SHIP_PRICE} TL Kargo)`;
+      bar.innerHTML = `🚀 ${totalQty} Adet | ${totalPrice} TL (Bedava Kargo!)`;
     } else {
       bar.classList.remove("success");
-      bar.innerHTML = `Sepetiniz: ${totalQty} Adet (Minimum için ${MIN_QTY - totalQty} daha) | ${totalPrice} TL`;
+      const diff = FREE_SHIP_THRESHOLD - totalPrice;
+      bar.innerHTML = `Sepetiniz: ${totalPrice} TL | Bedava kargo için ${diff} TL daha ekleyin`;
     }
   }
 
-  // AUTO-SAVE FORM
+  // Auto-Save Form
   ["businessName", "address", "recipient", "phone"].forEach(f => {
     const el = document.getElementById(f);
     if(el) {
@@ -157,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
 
-  // SİPARİŞİ OLUŞTUR (DETAYLI FİYATLANDIRMA)
+  // SIPARIŞ OLUŞTURMA
   document.getElementById("createOrderBtn").onclick = () => {
     let totalQty = 0;
     let subtotal = 0;
@@ -169,18 +173,16 @@ document.addEventListener("DOMContentLoaded", function() {
           const lineTotal = qty[p.id] * p.price;
           totalQty += qty[p.id];
           subtotal += lineTotal;
-          // Her satıra adet x birim fiyat = satır toplamı ekliyoruz
           productLines += `• ${p.id} - ${p.name}: ${qty[p.id]} adet x ${p.price} TL = ${lineTotal} TL\n`;
         }
       });
     });
 
-    if (totalQty < MIN_QTY) { alert(`En az ${MIN_QTY} adet seçmelisiniz.`); return; }
+    if (totalQty === 0) { alert(`Lütfen en az bir ürün seçiniz.`); return; }
 
-    const shipping = totalQty >= FREE_SHIP ? 0 : SHIP_PRICE;
+    const shipping = subtotal >= FREE_SHIP_THRESHOLD ? 0 : SHIP_PRICE;
     const grandTotal = subtotal + shipping;
 
-    // Detaylı WhatsApp Mesajı
     const summaryText = `NFC.web.tr Yeni Sipariş!\n\n` +
       `Firma: ${document.getElementById("businessName").value}\n` +
       `Alıcı: ${document.getElementById("recipient").value}\n` +
@@ -188,7 +190,6 @@ document.addEventListener("DOMContentLoaded", function() {
       `Adres: ${document.getElementById("address").value}\n\n` +
       `Ürünler:\n${productLines}\n` +
       `------------------------\n` +
-      `Toplam Adet: ${totalQty}\n` +
       `Ara Toplam: ${subtotal} TL\n` +
       `Kargo: ${shipping === 0 ? 'Ücretsiz' : shipping + ' TL'}\n` +
       `Genel Toplam: ${grandTotal} TL`;
