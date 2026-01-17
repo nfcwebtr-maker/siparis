@@ -16,9 +16,9 @@
     <h1>NFC Toplu Anahtarlık Siparişi</h1>
 
     <p class="desc">
-      <strong>Toplu Sipariş Platformumuza Hoş Geldiniz!</strong><br>
-      Ürünlere tıklayarak sepetinize adet ekleyebilirsiniz (+5 adet). <br><br>
-      ✨ <strong>Min. Sipariş:</strong> 20 adet | 🚚 <strong>Ücretsiz Kargo:</strong> 30 adet ve üzeri
+      <strong>Kategorilere Göz Atın ve Seçiminizi Yapın!</strong><br>
+      Ürünlere tıklayarak +5 adet ekleyebilirsiniz. <br>
+      ✨ <strong>Min. Sipariş:</strong> 20 adet | 🚚 <strong>Bedava Kargo:</strong> 30 adet
     </p>
 
     <div class="order-form">
@@ -26,14 +26,9 @@
       <input id="address" type="text" placeholder="Teslimat Adresi">
       <input id="recipient" type="text" placeholder="Alıcı Adı Soyadı">
       <input id="phone" type="tel" placeholder="Telefon (05xx...)">
-      <p style="font-size: 11px; color: #888; margin: 0; text-align: center;">Bilgileriniz otomatik olarak kaydedilir.</p>
     </div>
 
-    <div style="text-align: right; margin-bottom: 10px;">
-      <button id="resetCartBtn" style="background:none; border:none; color:#ef4444; cursor:pointer; font-size:13px;">🗑️ Sepeti Temizle</button>
-    </div>
-
-    <div class="grid" id="grid"></div>
+    <div id="categoriesContainer"></div>
 
     <button id="createOrderBtn">Siparişi Oluştur</button>
 
