@@ -97,3 +97,23 @@ h1 { text-align: center; color: #111; }
 /* Responsive Anpassungen */
 @media (max-width: 900px) { :root { --cols: 2; } }
 @media (max-width: 500px) { :root { --cols: 1; } }
+
+/* Neu: Pulsieren für den WhatsApp Button */
+@keyframes pulse-green {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.4); }
+  70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(37, 211, 102, 0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+}
+
+.wa-pulse {
+  animation: pulse-green 2s infinite;
+  border-radius: 50%;
+}
+
+/* Optimierung der Statusbar für zwei Infos */
+.status-bar {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  font-size: 14px;
+}
