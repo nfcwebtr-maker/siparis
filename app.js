@@ -7,45 +7,45 @@ const CATEGORIES = [
   {
     name: "Başlangıç Setleri ve Standlar",
     products: [
-      { id: "599", name: "Acil Durum ve Sosyal Medya Başlangıç Seti", price: 1600, image: "assets/000.png", step: 1 },
+      { id: "599", name: "Acil Durum ve Sosyal Medya Başlangıç Seti", price: 1800, image: "assets/000.png", step: 1 },
       { id: "598", name: "Anahtarlık Teşhir Standı -Boş-", price: 200, image: "assets/598.png", step: 1 }
     ]
   },
   {
     name: "SOS ve Acil Durum Anahtarlıkları",
     products: [
-      { id: "510", name: "NFC 0 Pozitif Kan Grubu", price: 40, image: "assets/510.png", step: 5 },
-      { id: "521", name: "NFC Çocuk Acil Yardım Mavi - Beyaz", price: 40, image: "assets/521.png", step: 5 },
-      { id: "522", name: "NFC Çocuk Acil Yardım Pembe - Beyaz", price: 40, image: "assets/522.png", step: 5 },
-      { id: "511", name: "NFC 0 Negatif Kan Grubu", price: 40, image: "assets/511.png", step: 5 },
-      { id: "512", name: "NFC A Pozitif Kan Grubu", price: 40, image: "assets/512.png", step: 5 },
-      { id: "513", name: "NFC A Negatif Kan Grubu", price: 40, image: "assets/513.png", step: 5 },
-      { id: "514", name: "NFC B Pozitif Kan Grubu", price: 40, image: "assets/514.png", step: 5 },
-      { id: "515", name: "NFC B Negatif Kan Grubu", price: 40, image: "assets/515.png", step: 5 },
-      { id: "516", name: "NFC AB Pozitif Kan Grubu", price: 40, image: "assets/516.png", step: 5 },
-      { id: "517", name: "NFC AB Negatif Kan Grubu", price: 40, image: "assets/517.png", step: 5 }
+      { id: "510", name: "NFC 0 Pozitif Kan Grubu", price: 45, image: "assets/510.png", step: 5 },
+      { id: "521", name: "NFC Çocuk Acil Yardım Mavi - Beyaz", price: 45, image: "assets/521.png", step: 5 },
+      { id: "522", name: "NFC Çocuk Acil Yardım Pembe - Beyaz", price: 45, image: "assets/522.png", step: 5 },
+      { id: "511", name: "NFC 0 Negatif Kan Grubu", price: 45, image: "assets/511.png", step: 5 },
+      { id: "512", name: "NFC A Pozitif Kan Grubu", price: 45, image: "assets/512.png", step: 5 },
+      { id: "513", name: "NFC A Negatif Kan Grubu", price: 45, image: "assets/513.png", step: 5 },
+      { id: "514", name: "NFC B Pozitif Kan Grubu", price: 45, image: "assets/514.png", step: 5 },
+      { id: "515", name: "NFC B Negatif Kan Grubu", price: 45, image: "assets/515.png", step: 5 },
+      { id: "516", name: "NFC AB Pozitif Kan Grubu", price: 45, image: "assets/516.png", step: 5 },
+      { id: "517", name: "NFC AB Negatif Kan Grubu", price: 45, image: "assets/517.png", step: 5 }
     ]
   },
   {
     name: "Sosyal Medya Takip Anahtarlıkları",
     products: [
-      { id: "501", name: "NFC Instagram Takip Pembe", price: 40, image: "assets/501.png", step: 5 },
-      { id: "502", name: "NFC WhatsApp Yeşil", price: 40, image: "assets/502.png", step: 5 },
-      { id: "503", name: "NFC TikTok Takip", price: 40, image: "assets/503.png", step: 5 },
-      { id: "504", name: "NFC Facebook Takip", price: 40, image: "assets/504.png", step: 5 }
+      { id: "501", name: "NFC Instagram Takip Pembe", price: 45, image: "assets/501.png", step: 5 },
+      { id: "502", name: "NFC WhatsApp Yeşil", price: 45, image: "assets/502.png", step: 5 },
+      { id: "503", name: "NFC TikTok Takip", price: 45, image: "assets/503.png", step: 5 },
+      { id: "504", name: "NFC Facebook Takip", price: 45, image: "assets/504.png", step: 5 }
     ]
   },
   {
     name: "İşletmelere Özel NFC Anahtarlıklar",
     products: [
-      { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 50, image: "assets/505.png", step: 5 }
+      { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 55, image: "assets/505.png", step: 5 }
     ]
   },
   {
     name: "Veteriner ve PetShop Anahtarlıkları",
     products: [
-      { id: "531", name: "NFC Pati Beyaz Pembe", price: 40, image: "assets/531.png", step: 5 },
-      { id: "532", name: "NFC Pati Siyah Pembe", price: 40, image: "assets/532.png", step: 5 }
+      { id: "531", name: "NFC Pati Beyaz Pembe", price: 45, image: "assets/531.png", step: 5 },
+      { id: "532", name: "NFC Pati Siyah Pembe", price: 45, image: "assets/532.png", step: 5 }
     ]
   }
 ];
@@ -165,6 +165,7 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
 
