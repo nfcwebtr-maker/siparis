@@ -41,8 +41,8 @@ const CATEGORIES = [
       { id: "505", name: "Logolu Yuvarlak NFC Anahtarlık", price: 55, image: "assets/505.png", step: 5 }
     ]
   },
-{
-    name: "Çocuk ve Kırtasıye Anahtarlıkları",
+  {
+    name: "Çocuk ve Kırtasiye Anahtarlıkları",
     products: [
       { id: "518", name: "NFC Pickachu Karakter", price: 45, image: "assets/518.png", step: 5 },
       { id: "519", name: "NFC Labubu Karakter", price: 45, image: "assets/519.png", step: 5 },
@@ -53,10 +53,10 @@ const CATEGORIES = [
       { id: "524", name: "NFC Çanta Beyaz Pembe", price: 45, image: "assets/524.png", step: 5 },
       { id: "525", name: "NFC Çanta Siyah Pembe", price: 45, image: "assets/525.png", step: 5 },
       { id: "526", name: "NFC Çanta Siyah Yeşil", price: 45, image: "assets/526.png", step: 5 },
-      { id: "527", name: "NFC Spider-Man Karakter", price: 45, image: "assets/527.png", step: 5 }
+      { id: "527", name: "NFC Spider-man Karakter", price: 45, image: "assets/527.png", step: 5 }
     ]
-  }
-    {
+  }, // <--- Buradaki virgül ve parantez hatası düzeltildi
+  {
     name: "Veteriner ve PetShop Anahtarlıkları",
     products: [
       { id: "531", name: "NFC Pati Beyaz Pembe", price: 45, image: "assets/531.png", step: 5 },
@@ -182,6 +182,7 @@ document.getElementById('sendWhatsappBtn').addEventListener('click', () => {
 });
 
 document.addEventListener('DOMContentLoaded', renderUI);
+
 
 
 
